@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mistake Journal Error Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <div class="flex items-center gap-4 mb-8 mt-2 px-1">
+        <button onclick="location.href='quiz.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400"><i class="fa-solid fa-chevron-left"></i></button>
+        <div>
+            <h1 class="text-xl font-black italic text-red-500 uppercase tracking-tighter">MISTAKE JOURNAL</h1>
+            <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Your Personalized Error Book Repository</p>
+        </div>
+    </div>
+
+    <div class="space-y-4" id="errorBookQuestionsContainer">
+        <p class="text-center text-gray-600 text-[10px] uppercase py-10 font-black tracking-widest">Compiling failed evaluation metrics logs...</p>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+        const userPhone = localStorage.getItem('mUserPhone') || "9999999999";
+
+        function syncErrorBookLogs() {
+            const safePhone = userPhone.replace(/[^0-9]/g, "");
+            database.ref(`students/${safePhone}/errorBook`).on('value', snap => {
+                const container = document.getElementById('errorBookQuestionsContainer'); container.innerHTML = "";
+                if(!snap.exists()) { container.innerHTML = '<p class="text-center text-xs text-gray-600 py-10 uppercase font-black">Your Error Book is completely clean! Keep practicing.</p>'; return; }
+
+                snap.forEach(child => {
+                    const e = child.val();
+                    container.innerHTML += `
+                        <div class="glass p-5 rounded-[2.2rem] border border-red-500/10 space-y-3 shadow-md bg-gradient-to-br from-red-500/5 to-transparent">
+                            <span class="text-[6px] font-black uppercase text-red-400 bg-red-500/10 px-2 py-0.5 rounded tracking-wider"><i class="fa-solid fa-circle-xmark mr-1"></i> Failed Target Attempt</span>
+                            <h3 class="text-xs font-bold leading-snug text-white">${e.question}</h3>
+                            <div class="p-3 bg-black/40 rounded-xl border border-white/5 text-[9px] font-black space-y-1">
+                                <p class="text-red-400 uppercase">Your Choice: Option ${e.wrongAnswerKey}</p>
+                                <p class="text-green-400 uppercase">NCERT Standard Correct: Option ${e.correctAnswerKey}</p>
+                                <p class="text-yellow-500 uppercase mt-2"><i class="fa-solid fa-map-pin mr-1"></i> Location: ${e.textbookLocation}</p>
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+        syncErrorBookLogs();
+    </script>
+</body>
+</html>
+
