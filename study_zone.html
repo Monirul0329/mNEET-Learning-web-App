@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Zone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 100px; }
+        .card-container { transition: all 0.25s ease; border-left: 5px solid; cursor: pointer; }
+        .card-container:active { transform: scale(0.96); opacity: 0.8; }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <div class="flex justify-between items-center p-5 bg-[#16213e] border-b border-white/5 shadow-xl">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='dashboard.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400"><i class="fa-solid fa-chevron-left"></i></button>
+            <h1 class="text-lg font-black italic uppercase text-yellow-500 tracking-tighter">STUDY ZONE</h1>
+        </div>
+    </div>
+
+    <!-- Main Dynamic Scrolling List Area -->
+    <div class="scroll-area p-4 space-y-5">
+        
+        <!-- Live Knowledge Mastery Automated Progress Card -->
+        <div class="glass p-5 rounded-3xl border-b-2 border-blue-500/30 mx-1">
+            <div class="flex justify-between items-center mb-2 px-1">
+                <span class="text-[9px] font-black uppercase text-gray-500 italic tracking-widest">Knowledge Mastery</span>
+                <span class="text-[10px] font-black text-blue-400" id="progressPctText">0%</span>
+            </div>
+            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                <div class="bg-blue-500 h-full transition-all duration-500" id="progressBarFill" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- 1. Lecture Hub Card -->
+        <div onclick="location.href='lecture_notes_hub.html'" class="glass p-5 rounded-[2.2rem] flex justify-between items-center card-container border-blue-500 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500"><i class="fa-solid fa-clapperboard text-sm"></i></div>
+                <h4 class="text-xs font-black uppercase italic text-white tracking-wide">Lecture, Notes & DPP Hub</h4>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 2. Smart Automated NCERT Card -->
+        <div onclick="location.href='study.html'" class="glass p-5 rounded-[2.2rem] flex justify-between items-center card-container border-yellow-500 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-book-open text-sm"></i></div>
+                <h4 class="text-xs font-black uppercase italic text-white tracking-wide">NCERT Reading & PYQ Tags</h4>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 3. Quiz Hub Card -->
+        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2.2rem] flex justify-between items-center card-container border-purple-500 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid fa-vial-circle-check text-sm"></i></div>
+                <h4 class="text-xs font-black uppercase italic text-white tracking-wide">Chapter & Topic Quiz</h4>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 4. Special Hub Card -->
+        <div onclick="location.href='special_hub.html'" class="glass p-5 rounded-[2.2rem] flex justify-between items-center card-container border-red-500 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500"><i class="fa-solid fa-folder-plus text-sm"></i></div>
+                <h4 class="text-xs font-black uppercase italic text-white tracking-wide">Special Materials Hub</h4>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 5. Doubt Box Card -->
+        <div onclick="location.href='support.html'" class="glass p-5 rounded-[2.2rem] flex justify-between items-center card-container border-green-500 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500"><i class="fa-solid fa-headset text-sm"></i></div>
+                <h4 class="text-xs font-black uppercase italic text-white tracking-wide">Doubt & Support Box</h4>
+            </div>
+            <div class="bg-green-500 text-[6px] font-black px-2 py-0.5 rounded text-black italic">LIVE</div>
+        </div>
+
+    </div>
+
+    <!-- Persistent Navigation Footer Menu -->
+    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center z-50 border-white/10 shadow-2xl">
+        <a href="dashboard.html" class="text-gray-500"><i class="fa-solid fa-house"></i></a>
+        <i class="fa-solid fa-book-open text-yellow-500"></i>
+        <a href="quiz.html" class="text-gray-500"><i class="fa-solid fa-pen-nib"></i></a>
+        <a href="mstore.html" class="text-gray-500"><i class="fa-solid fa-store"></i></a>
+    </nav>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+
+        const userPhone = localStorage.getItem('mUserPhone');
+        if(userPhone) {
+            const safePhone = userPhone.replace(/[^0-9]/g, "");
+            
+            // Dynamic accuracy progress score parsing algorithm logic base line
+            database.ref(`students/${safePhone}/questionsSolved`).on('value', snap => {
+                const solved = snap.val() || 0;
+                let targetPct = Math.min(Math.round((solved / 200) * 100), 100); // 200 question solving standard criteria index
+                document.getElementById('progressPctText').innerText = targetPct + "%";
+                document.getElementById('progressBarFill').style.width = targetPct + "%";
+            });
+        }
+    </script>
+</body>
+              </html>
+      
