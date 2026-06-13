@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mNEET Doubt Support Box</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .green-glow { color: #22c55e; text-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Header Navigation Header Toolbar Layout Map -->
+    <div class="flex justify-between items-center mb-8 px-1 mt-2">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='study_zone.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+            <div>
+                <h1 class="text-xl font-black italic green-glow uppercase tracking-tighter">DOUBT BOX</h1>
+                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Submit Academic Doubts Instantly</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doubt Form Injection Area Context Block Structure Form Center -->
+    <div class="max-w-md mx-auto bg-[#16213e] p-6 rounded-[2.5rem] border border-white/5 shadow-2xl space-y-4">
+        <p class="text-[8px] font-black uppercase text-gray-500 text-center tracking-widest">Doubt Stream Processing Nodes</p>
+        
+        <div>
+            <label class="text-[7px] font-black uppercase text-gray-400 pl-1">Specific Chapter Name / Reference Topic</label>
+            <input type="text" id="doubtTopicRef" placeholder="e.g. Biomolecules - Protein Structures..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs font-bold mt-1 text-white">
+        </div>
+        <div>
+            <label class="text-[7px] font-black uppercase text-gray-400 pl-1">Elaborate Your Confusion / Question Query fully</label>
+            <textarea id="doubtMessagePayloadText" rows="4" placeholder="Type your detailed academic doubt parameters here..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs font-bold mt-1 text-white resize-none"></textarea>
+        </div>
+
+        <button onclick="dispatchUserDoubtPayloadStream()" class="w-full bg-green-600 py-4 text-white rounded-2xl font-black uppercase text-xs tracking-wider shadow-lg active:scale-95 transition-all">
+            Submit Doubt Stream Node
+        </button>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+        
+        const userPhone = localStorage.getItem('mUserPhone') || "AnonymousUser";
+
+        function dispatchUserDoubtPayloadStream() {
+            const topic = document.getElementById('doubtTopicRef').value.trim();
+            const msg = document.getElementById('doubtMessagePayloadText').value.trim();
+
+            if(!topic || !msg) return alert("Please fill all required doubt parameters text areas validation fields fully!");
+
+            const safePhone = userPhone.replace(/[^0-9]/g, "");
+
+            database.ref(`doubtsQueue`).push({
+                studentPhone: safePhone,
+                topicReference: topic,
+                doubtMessage: msg,
+                isResolved: false,
+                timestamp: Date.now()
+            }).then(() => {
+                alert("Doubt telemetry log successfully transmitted straight to mNEET instructor helpdesks!");
+                document.getElementById('doubtTopicRef').value = "";
+                document.getElementById('doubtMessagePayloadText').value = "";
+            }).catch(err => alert("Submission error: " + err.message));
+        }
+    </script>
+</body>
+</html>
+
