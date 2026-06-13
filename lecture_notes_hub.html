@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture & DPP Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .blue-glow { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Header Tool Row Navigation -->
+    <div class="flex justify-between items-center mb-8 px-1 mt-2">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='study_zone.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+            <div>
+                <h1 class="text-xl font-black italic blue-glow uppercase tracking-tighter">LECTURE HUB</h1>
+                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Video streams, class sheets & dpp downloads</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Class Batches Chapters Tree Wrapper -->
+    <div class="space-y-4" id="lectureChaptersDisplayContainer">
+        
+        <!-- Standard Chapter Module Frame Target Fallback Row -->
+        <div class="glass p-5 rounded-[2.5rem] border border-white/5 space-y-4 shadow-xl bg-gradient-to-br from-blue-500/5 to-transparent">
+            <div>
+                <span class="text-[7px] font-black uppercase bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded tracking-wider italic">Syllabus Node: Ch 08</span>
+                <h3 class="text-sm font-black uppercase italic mt-1.5 tracking-wide text-white">Cell: The Unit of Life</h3>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5">
+                <a href="https://www.youtube.com" target="_blank" class="p-3 bg-red-600/10 border border-red-500/20 rounded-xl text-center flex flex-col items-center justify-center space-y-1 active:scale-95 transition-all">
+                    <i class="fa-solid fa-play text-red-500 text-xs"></i><span class="text-[6px] font-black uppercase text-gray-300 block">Watch Lecture</span>
+                </a>
+                <a href="https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/biology/keey110.pdf" target="_blank" class="p-3 bg-blue-600/10 border border-blue-500/20 rounded-xl text-center flex flex-col items-center justify-center space-y-1 active:scale-95 transition-all">
+                    <i class="fa-solid fa-file-invoice text-blue-400 text-xs"></i><span class="text-[6px] font-black uppercase text-gray-300 block">Class Notes</span>
+                </a>
+                <a href="https://ncert.nic.in/textbook/pdf/kebo108.pdf" target="_blank" class="p-3 bg-purple-600/10 border border-purple-500/20 rounded-xl text-center flex flex-col items-center justify-center space-y-1 active:scale-95 transition-all">
+                    <i class="fa-solid fa-paste text-purple-400 text-xs"></i><span class="text-[6px] font-black uppercase text-gray-300 block">Daily DPP</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
