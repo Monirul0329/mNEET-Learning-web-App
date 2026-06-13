@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard Command</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .blue-glow { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+    </style>
+</head>
+<body class="p-6">
+
+    <!-- Header Grid Area -->
+    <div class="max-w-xl mx-auto mb-8 mt-4 flex justify-between items-center px-1">
+        <div>
+            <h1 class="text-xl font-black italic blue-glow uppercase tracking-tighter">mNEET CONTROL COMMAND</h1>
+            <p class="text-[8px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Central Management Operations Panel</p>
+        </div>
+        <div class="w-10 h-10 glass rounded-xl flex items-center justify-center text-blue-500"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+    </div>
+
+    <!-- Core Administrative Hub Configuration Selection Matrix -->
+    <div class="max-w-xl mx-auto grid grid-cols-1 gap-4">
+        
+        <!-- 1. Lecture Hub Core Control Redirector Card -->
+        <div onclick="location.href='admin_lecture_chapters.html'" class="glass p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500"><i class="fa-solid fa-clapperboard text-lg"></i></div>
+                <div>
+                    <h3 class="text-xs font-black uppercase italic tracking-wide text-white">Lecture & DPP Manager Hub</h3>
+                    <p class="text-[7px] text-gray-500 uppercase font-black mt-1">Video Streams, Class Sheets & DPP links upload panel</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 2. Smart Automated NCERT Control Card -->
+        <div onclick="location.href='admin_ncert.html'" class="glass p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-book"></i></div>
+                <div>
+                    <h3 class="text-xs font-black uppercase italic tracking-wide text-white">NCERT Automated Content Connector</h3>
+                    <p class="text-[7px] text-gray-500 uppercase font-black mt-1">Manage Class/Chapter indices keys toggle configurations</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+        <!-- 3. Quiz Bank Builder Matrix Card -->
+        <div onclick="location.href='admin_quiz_chapters.html'" class="glass p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid fa-vial-circle-check text-lg"></i></div>
+                <div>
+                    <h3 class="text-xs font-black uppercase italic tracking-wide text-white">Quiz Bank Builder Engine</h3>
+                    <p class="text-[7px] text-gray-500 uppercase font-black mt-1">Inject custom dynamic MCQs with explicit answer criteria</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
