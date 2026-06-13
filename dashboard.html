@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .gold-glow { text-shadow: 0 0 10px rgba(234, 179, 8, 0.4); }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Target Goal Profile Block -->
+    <div class="flex justify-between items-center mb-6 px-2 mt-4">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-md" id="initialMark">U</div>
+            <div>
+                <h1 class="text-xs font-black uppercase italic tracking-wide text-white" id="usrName">Aspirant</h1>
+                <p class="text-[8px] text-yellow-500 font-black uppercase tracking-wider mt-0.5"><i class="fa-solid fa-building-columns mr-1"></i> <span id="dreamDisplay">AIIMS Delhi</span></p>
+            </div>
+        </div>
+        <div class="bg-yellow-500/10 px-3.5 py-1.5 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">
+            🪙 <span id="coinDisplay">0</span>
+        </div>
+    </div>
+
+    <!-- Live Microscopic Countdown Timer Panel -->
+    <div class="glass p-5 rounded-[2rem] border border-white/5 text-center mx-1 mb-6">
+        <p class="text-[7px] font-black tracking-widest uppercase text-gray-500 mb-2 italic">🔴 COUNTDOWN TO NATIONAL EXAM GATEWAY</p>
+        <div class="grid grid-cols-4 gap-2">
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdDays" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Days</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdHours" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Hours</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdMins" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Mins</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdSecs" class="text-base font-black italic text-red-500 leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Secs</span></div>
+        </div>
+    </div>
+
+    <!-- Activity Tracker Stats Dashboard Panels -->
+    <div class="grid grid-cols-3 gap-3 px-1 mb-6">
+        <div class="glass p-3 rounded-2xl text-center border-b-2 border-blue-500/40">
+            <i class="fa-solid fa-clock text-blue-500 text-xs mb-1"></i>
+            <h4 class="text-[10px] font-black text-white leading-none" id="trackHours">0m</h4>
+            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">Study Time</span>
+        </div>
+        <div class="glass p-3 rounded-2xl text-center border-b-2 border-purple-500/40">
+            <i class="fa-solid fa-circle-check text-purple-400 text-xs mb-1"></i>
+            <h4 class="text-[10px] font-black text-white leading-none" id="trackSolved">0</h4>
+            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">Solved MCQs</span>
+        </div>
+        <div class="glass p-3 rounded-2xl text-center border-b-2 border-green-500/40">
+            <i class="fa-solid fa-medal text-green-400 text-xs mb-1"></i>
+            <h4 class="text-[8px] font-black text-green-400 uppercase tracking-tighter truncate" id="trackRank">Aspirant</h4>
+            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Rank Status</span>
+        </div>
+    </div>
+
+    <!-- Quick Dynamic Launch Routing Cards Matrix -->
+    <div class="grid grid-cols-2 gap-4 px-1">
+        <div onclick="location.href='study_zone.html'" class="glass p-5 rounded-[2rem] border-b-4 border-blue-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer shadow-md">
+            <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 text-xs"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div><h4 class="text-xs font-black uppercase italic text-white leading-none">Study Hub</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Smart Reading</p></div>
+        </div>
+        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2rem] border-b-4 border-purple-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer shadow-md">
+            <div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xs"><i class="fa-solid fa-brain"></i></div>
+            <div><h4 class="text-xs font-black uppercase italic text-white leading-none">Practice Quiz</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">NTA Simulator</p></div>
+        </div>
+    </div>
+
+    <!-- Persistent Bottom Bar System Menu -->
+    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center shadow-2xl border-white/10 z-50">
+        <i class="fa-solid fa-house text-yellow-500 gold-glow"></i>
+        <a href="study_zone.html" class="text-gray-600"><i class="fa-solid fa-book-open"></i></a>
+        <a href="quiz.html" class="text-gray-600"><i class="fa-solid fa-pen-nib"></i></a>
+        <a href="mstore.html" class="text-gray-600"><i class="fa-solid fa-store"></i></a>
+    </nav>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+
+        const userPhone = localStorage.getItem('mUserPhone');
+        
+        function syncProfileDashboard() {
+            if(!userPhone) return location.href = 'index.html';
+            const safePhone = userPhone.replace(/[^0-9]/g, "");
+
+            database.ref(`students/${safePhone}`).on('value', snap => {
+                const u = snap.val() || {};
+                document.getElementById('usrName').innerText = u.name || "Aspirant";
+                document.getElementById('initialMark').innerText = (u.name || "A").charAt(0).toUpperCase();
+                document.getElementById('dreamDisplay').innerText = u.dreamCollege || "Not Assigned";
+                document.getElementById('coinDisplay').innerText = u.coins || 0;
+                document.getElementById('trackHours').innerText = (u.hoursSpent || 0) + "m";
+                document.getElementById('trackSolved').innerText = u.questionsSolved || 0;
+                
+                // Experience points scaling system logic for 10 ranks tier
+                const xp = u.xp || 0;
+                let rank = "Aspirant";
+                if(xp > 100) rank = "Med Student"; if(xp > 300) rank = "Intern"; if(xp > 600) rank = "House Staff";
+                if(xp > 1000) rank = "Resident"; if(xp > 1500) rank = "Registrar"; if(xp > 2200) rank = "Specialist";
+                if(xp > 3000) rank = "Consultant"; if(xp > 4000) rank = "Professor"; if(xp > 5500) rank = "Surgeon General";
+                document.getElementById('trackRank').innerText = rank;
+            });
+        }
+
+        // Live Countdown Clock Calculation Engine Configuration (Target fixed to NEET Standard framework)
+        function startLiveCountdown() {
+            const examDate = new Date("May 3, 2026 14:00:00").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = examDate - now;
+                if(diff <= 0) return;
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cdDays').innerText = days < 10 ? "0"+days : days;
+                document.getElementById('cdHours').innerText = hours < 10 ? "0"+hours : hours;
+                document.getElementById('cdMins').innerText = mins < 10 ? "0"+mins : mins;
+                document.getElementById('cdSecs').innerText = secs < 10 ? "0"+secs : secs;
+            }, 1000);
+        }
+
+        syncProfileDashboard();
+        startLiveCountdown();
+    </script>
+</body>
+              </html>
+          
