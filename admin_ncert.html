@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCERT Index System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); outline: none; color: white; }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Top Navigation Toolbar Header Row -->
+    <div class="sticky top-0 z-50 p-6 glass border-b border-white/5 flex justify-between items-center">
+        <button onclick="location.href='admin_dashboard.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2 class="text-xs font-black text-yellow-500 uppercase tracking-widest">NCERT Index System</h2>
+        <div class="w-10"></div>
+    </div>
+
+    <!-- Setup Index Matrix Configuration Input Form Center -->
+    <div class="p-4 max-w-lg mx-auto space-y-6">
+        <div class="bg-[#16213e] p-6 rounded-[2.5rem] border border-white/5 shadow-2xl space-y-4">
+            <p class="text-[8px] font-black uppercase text-gray-500 text-center tracking-widest">Connect New Chapter Entry Key</p>
+            <div>
+                <label class="text-[7px] font-black uppercase text-gray-400 pl-1">Chapter Target Name</label>
+                <input type="text" id="autoChName" placeholder="e.g. Biomolecules, Cell Division..." class="w-full glass-input p-4 rounded-xl text-xs font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[7px] font-black uppercase text-gray-400 pl-1">Target Index Identifier Key ID</label>
+                <input type="text" id="autoChKey" placeholder="e.g. ch8, ch10..." class="w-full glass-input p-4 rounded-xl text-xs font-bold mt-1">
+            </div>
+            <button onclick="publishAutomatedNCERTNode()" class="w-full bg-yellow-500 text-black py-4 rounded-xl font-black uppercase text-xs shadow-lg active:scale-95 transition-all">Publish Automated Chapter</button>
+        </div>
+
+        <div class="space-y-3" id="adminActiveNcertList"></div>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.database();
+        const batchId = "B001"; // Consistent mapping channels link key
+
+        function publishAutomatedNCERTNode() {
+            const name = document.getElementById('autoChName').value.trim();
+            const chKey = document.getElementById('autoChKey').value.trim();
+            if(!name || !chKey) return alert("Fill out all required parameters validation data fields!");
+
+            db.ref(`courses/${batchId}/ncert/${chKey}`).set({
+                name: name, chId: chKey, isHidden: false, timestamp: Date.now()
+            }).then(() => {
+                alert("Automated Chapter Target Node Added Successfully!");
+                document.getElementById('autoChName').value = "";
+                document.getElementById('autoChKey').value = "";
+            });
+        }
+
+        function syncActiveChapters() {
+            db.ref(`courses/${batchId}/ncert`).on('value', snap => {
+                const list = document.getElementById('adminActiveNcertList'); list.innerHTML = "";
+                if(!snap.exists()) return;
+                snap.forEach(child => {
+                    const c = child.val();
+                    list.innerHTML += `
+                        <div class="glass p-5 rounded-[2rem] border border-white/5 flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xs font-black uppercase italic text-white">${c.name}</h4>
+                                <span class="text-[6px] text-gray-500 font-bold block uppercase mt-1">Target Key Node: ${c.chId}</span>
+                            </div>
+                            <button onclick="purgeNcertNode('${child.key}')" class="w-9 h-9 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center active:scale-90"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </div>`;
+                });
+            });
+        }
+        function purgeNcertNode(key) { if(confirm("Confirm to remove this automated index target node?")) db.ref(`courses/${batchId}/ncert/${key}`).remove(); }
+        syncActiveChapters();
+    </script>
+</body>
+</html>
+
