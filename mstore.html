@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-Store Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .green-glow { color: #22c55e; text-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Vault Balance Header Status Bar -->
+    <div class="flex justify-between items-center mb-8 px-1 mt-2">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='dashboard.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+            <div>
+                <h1 class="text-xl font-black italic green-glow uppercase tracking-tighter">REWARDS STORE</h1>
+                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Spend BP Coins To Unlock Booster Sheets</p>
+            </div>
+        </div>
+        <div class="bg-yellow-500/10 px-4 py-2 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">
+            🪙 <span id="storeVaultBalance">0</span>
+        </div>
+    </div>
+
+    <!-- Active Store Rewards Item Cards Matrix Grid View -->
+    <div class="grid grid-cols-2 gap-4" id="storeItemsContainer">
+        <!-- Item 1 Card -->
+        <div class="glass p-4 rounded-[2rem] border border-white/5 flex flex-col justify-between space-y-3 shadow-md">
+            <div class="w-full h-24 bg-black/40 rounded-xl flex items-center justify-center text-green-500 text-2xl shadow-inner border border-white/5">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <div>
+                <h4 class="text-[10px] font-black uppercase text-white tracking-wide truncate">NEET Top 100 Error Hack Book</h4>
+                <p class="text-[8px] font-black text-yellow-500 italic mt-0.5">🪙 50 Coins</p>
+            </div>
+            <button onclick="purchaseStoreAsset('error_hack_01', 50)" class="w-full py-2 bg-green-600 text-white font-black uppercase rounded-xl text-[8px] tracking-widest active:scale-95 transition-all">Unlock</button>
+        </div>
+
+        <!-- Item 2 Card -->
+        <div class="glass p-4 rounded-[2rem] border border-white/5 flex flex-col justify-between space-y-3 shadow-md">
+            <div class="w-full h-24 bg-black/40 rounded-xl flex items-center justify-center text-green-500 text-2xl shadow-inner border border-white/5">
+                <i class="fa-solid fa-dna"></i>
+            </div>
+            <div>
+                <h4 class="text-[10px] font-black uppercase text-white tracking-wide truncate">Genetics Experimental Maps</h4>
+                <p class="text-[8px] font-black text-yellow-500 italic mt-0.5">🪙 80 Coins</p>
+            </div>
+            <button onclick="purchaseStoreAsset('genetics_maps_02', 80)" class="w-full py-2 bg-green-600 text-white font-black uppercase rounded-xl text-[8px] tracking-widest active:scale-95 transition-all">Unlock</button>
+        </div>
+    </div>
+
+    <!-- Bottom Persistent Layout Fixed Navigation Menu -->
+    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center shadow-2xl border-white/10 z-50">
+        <a href="dashboard.html" class="text-gray-500"><i class="fa-solid fa-house"></i></a>
+        <a href="study_zone.html" class="text-gray-500"><i class="fa-solid fa-book-open"></i></a>
+        <a href="quiz.html" class="text-gray-500"><i class="fa-solid fa-pen-nib"></i></a>
+        <i class="fa-solid fa-store text-[#22c55e] green-glow"></i>
+    </nav>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+        
+        const userPhone = localStorage.getItem('mUserPhone');
+        let totalWalletCoins = 0;
+
+        function syncStoreWallet() {
+            if(!userPhone) return;
+            const safePhone = userPhone.replace(/[^0-9]/g, "");
+            
+            database.ref(`students/${safePhone}/coins`).on('value', snap => {
+                totalWalletCoins = snap.val() || 0;
+                document.getElementById('storeVaultBalance').innerText = totalWalletCoins;
+            });
+        }
+
+        function purchaseStoreAsset(assetId, assetCost) {
+            if(!userPhone) return alert("Please establish a secure profile session gateway first!");
+            if(totalWalletCoins < assetCost) return alert("Transaction Failed: Insufficient BP Coin wallet balances! Solve quiz modules to earn points.");
+
+            if(confirm("Confirm to verify secure wallet point deduction system checks to unlock asset?")) {
+                const safePhone = userPhone.replace(/[^0-9]/g, "");
+                const remainingCoins = totalWalletCoins - assetCost;
+
+                // Fire transaction updates query streams directly to child nodes
+                database.ref(`students/${safePhone}`).update({
+                    coins: remainingCoins
+                }).then(() => {
+                    // Log successful unlock states parameters to student sub-arrays
+                    database.ref(`students/${safePhone}/unlockedRewards/${assetId}`).set(true).then(() => {
+                        alert("Asset Unlocked Successfully! Premium resource file keys added to your identity vault profile successfully.");
+                    });
+                }).catch(err => alert("Transaction Matrix Aborted: " + err.message));
+            }
+        }
+
+        syncStoreWallet();
+    </script>
+</body>
+</html>
