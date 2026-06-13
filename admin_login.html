@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { background: #070b14; color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; }</style>
+</head>
+<body class="p-4">
+    <div class="w-full max-w-sm bg-[#16213e] p-8 rounded-[2.5rem] text-center border border-white/5 shadow-2xl space-y-4">
+        <h2 class="text-base font-black uppercase text-blue-500 tracking-wider">Admin System Gate</h2>
+        <input type="email" id="admEmail" placeholder="Admin Registered Email" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 outline-none text-xs text-white">
+        <input type="password" id="admPass" placeholder="Security Password" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 outline-none text-xs text-white">
+        <button onclick="verifyAdminGate()" class="w-full bg-blue-600 py-4 rounded-xl text-xs font-black uppercase tracking-widest">Verify Commands</button>
+    </div>
+    <script>
+        function verifyAdminGate() {
+            const email = document.getElementById('admEmail').value.trim();
+            const pass = document.getElementById('admPass').value;
+            // Target strict verification credentials
+            if(email === "admin@mneet.com" && pass === "mneet2026") {
+                location.href = 'admin_dashboard.html';
+            } else { alert("Access Denied: Invalid Master Credentials!"); }
+        }
+    </script>
+</body>
+</html>
+
