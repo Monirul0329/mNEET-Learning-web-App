@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Command Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -10,71 +10,75 @@
     <style>
         .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
-        .gold-glow { text-shadow: 0 0 10px rgba(234, 179, 8, 0.4); }
+        .story-ring { background: linear-gradient(to right, #eab308, #ef4444, #3b82f6); padding: 2px; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body class="p-4 pb-32">
 
-    <!-- Top Target Goal Profile Block -->
     <div class="flex justify-between items-center mb-6 px-2 mt-4">
         <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-md" id="initialMark">U</div>
+            <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-md" id="profileBadgeText">U</div>
             <div>
-                <h1 class="text-xs font-black uppercase italic tracking-wide text-white" id="usrName">Aspirant</h1>
-                <p class="text-[8px] text-yellow-500 font-black uppercase tracking-wider mt-0.5"><i class="fa-solid fa-building-columns mr-1"></i> <span id="dreamDisplay">AIIMS Delhi</span></p>
+                <h1 class="text-xs font-black uppercase italic tracking-wide text-white" id="profileDashboardUserTitle">Loading Profile...</h1>
+                <p class="text-[8px] text-yellow-500 font-black uppercase tracking-wider mt-0.5"><i class="fa-solid fa-building-columns mr-1"></i> TARGET: <span id="dreamCollegeHeadlineText">AIIMS Delhi</span></p>
             </div>
         </div>
-        <div class="bg-yellow-500/10 px-3.5 py-1.5 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">
-            🪙 <span id="coinDisplay">0</span>
+        <div class="bg-yellow-500/10 px-3.5 py-1.5 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">🪙 <span id="walletCoinText">0</span></div>
+    </div>
+
+    <div class="px-2 mb-6 flex items-center gap-4">
+        <div class="flex flex-col items-center space-y-1 cursor-pointer" onclick="launchMotivationalStoryPopup('Stay focused! Mitosis cycle equations need complete revisions today.', 'Admin Audio Note')">
+            <div class="w-12 h-12 rounded-full story-ring"><div class="w-full h-full bg-[#070b14] rounded-full flex items-center justify-center text-white text-xs"><i class="fa-solid fa-bolt-lightning text-yellow-400"></i></div></div>
+            <span class="text-[6px] uppercase font-black text-gray-400 tracking-wider">Motivation</span>
+        </div>
+        <div class="flex flex-col items-center space-y-1 cursor-pointer" onclick="launchMotivationalStoryPopup('Biomolecules standard tables revision sequence uploaded in resources section.', 'Faculty Stream Note')">
+            <div class="w-12 h-12 rounded-full story-ring"><div class="w-full h-full bg-[#070b14] rounded-full flex items-center justify-center text-white text-xs"><i class="fa-solid fa-microphone text-blue-400"></i></div></div>
+            <span class="text-[6px] uppercase font-black text-gray-400 tracking-wider">Daily Alert</span>
         </div>
     </div>
 
-    <!-- Live Microscopic Countdown Timer Panel -->
     <div class="glass p-5 rounded-[2rem] border border-white/5 text-center mx-1 mb-6">
-        <p class="text-[7px] font-black tracking-widest uppercase text-gray-500 mb-2 italic">🔴 COUNTDOWN TO NATIONAL EXAM GATEWAY</p>
+        <p class="text-[7px] font-black tracking-widest uppercase text-gray-500 mb-2 italic">🔴 MICROSCOPIC TARGET COUNTDOWN CLOCK</p>
         <div class="grid grid-cols-4 gap-2">
-            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdDays" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Days</span></div>
-            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdHours" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Hours</span></div>
-            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdMins" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Mins</span></div>
-            <div class="bg-black/30 p-2 rounded-xl"><h3 id="cdSecs" class="text-base font-black italic text-red-500 leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold tracking-widest block mt-1">Secs</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="daysDisplay" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Days</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="hoursDisplay" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Hours</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="minsDisplay" class="text-base font-black italic leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Mins</span></div>
+            <div class="bg-black/30 p-2 rounded-xl"><h3 id="secsDisplay" class="text-base font-black italic text-red-500 leading-none">00</h3><span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Secs</span></div>
         </div>
     </div>
 
-    <!-- Activity Tracker Stats Dashboard Panels -->
     <div class="grid grid-cols-3 gap-3 px-1 mb-6">
         <div class="glass p-3 rounded-2xl text-center border-b-2 border-blue-500/40">
             <i class="fa-solid fa-clock text-blue-500 text-xs mb-1"></i>
-            <h4 class="text-[10px] font-black text-white leading-none" id="trackHours">0m</h4>
-            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">Study Time</span>
+            <h4 class="text-[10px] font-black text-white" id="statsHoursText">0m</h4><span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">Study Time</span>
         </div>
         <div class="glass p-3 rounded-2xl text-center border-b-2 border-purple-500/40">
-            <i class="fa-solid fa-circle-check text-purple-400 text-xs mb-1"></i>
-            <h4 class="text-[10px] font-black text-white leading-none" id="trackSolved">0</h4>
-            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">Solved MCQs</span>
+            <i class="fa-solid fa-vial text-purple-400 text-xs mb-1"></i>
+            <h4 class="text-[10px] font-black text-white" id="statsMcqText">0</h4><span class="text-[5px] text-gray-500 uppercase font-bold block mt-0.5">MCQs Solved</span>
         </div>
         <div class="glass p-3 rounded-2xl text-center border-b-2 border-green-500/40">
-            <i class="fa-solid fa-medal text-green-400 text-xs mb-1"></i>
-            <h4 class="text-[8px] font-black text-green-400 uppercase tracking-tighter truncate" id="trackRank">Aspirant</h4>
-            <span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Rank Status</span>
+            <i class="fa-solid fa-award text-green-400 text-xs mb-1"></i>
+            <h4 class="text-[7px] font-black text-green-400 uppercase truncate" id="statsRankBadgeText">Aspirant</h4><span class="text-[5px] text-gray-500 uppercase font-bold block mt-1">Medical Rank</span>
         </div>
     </div>
 
-    <!-- Quick Dynamic Launch Routing Cards Matrix -->
     <div class="grid grid-cols-2 gap-4 px-1">
-        <div onclick="location.href='study_zone.html'" class="glass p-5 rounded-[2rem] border-b-4 border-blue-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer shadow-md">
-            <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 text-xs"><i class="fa-solid fa-graduation-cap"></i></div>
-            <div><h4 class="text-xs font-black uppercase italic text-white leading-none">Study Hub</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Smart Reading</p></div>
-        </div>
-        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2rem] border-b-4 border-purple-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer shadow-md">
-            <div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xs"><i class="fa-solid fa-brain"></i></div>
-            <div><h4 class="text-xs font-black uppercase italic text-white leading-none">Practice Quiz</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">NTA Simulator</p></div>
+        <div onclick="location.href='study_zone.html'" class="glass p-5 rounded-[2rem] border-b-4 border-blue-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer"><div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 text-xs"><i class="fa-solid fa-user-doctor"></i></div><div><h4 class="text-xs font-black uppercase italic text-white leading-none">Study Zone</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Revision Matrix</p></div></div>
+        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2rem] border-b-4 border-purple-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer"><div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xs"><i class="fa-solid fa-stopwatch-20"></i></div><div><h4 class="text-xs font-black uppercase italic text-white leading-none">NTA Simulator</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Speed booster</p></div></div>
+    </div>
+
+    <div id="storyPopupModalOverlay" class="fixed inset-0 bg-black/95 z-[200] hidden items-center justify-center p-6 text-white" onclick="closeStoryPopup()">
+        <div class="w-full max-w-sm text-center p-6 space-y-6" onclick="event.stopPropagation()">
+            <div class="h-1 w-full bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 animate-pulse" style="width: 100%"></div></div>
+            <span class="text-[8px] font-black uppercase text-yellow-500 tracking-widest block" id="storySourceLabel">ADMIN VOICE ALERT</span>
+            <p id="storyMessageBodyText" class="text-sm font-black italic leading-relaxed text-slate-100"></p>
+            <button onclick="closeStoryPopup()" class="text-[9px] text-gray-500 font-black uppercase tracking-wider">Tap Screen To Close</button>
         </div>
     </div>
 
-    <!-- Persistent Bottom Bar System Menu -->
-    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center shadow-2xl border-white/10 z-50">
-        <i class="fa-solid fa-house text-yellow-500 gold-glow"></i>
+    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center z-50 border-white/10 shadow-2xl">
+        <i class="fa-solid fa-house text-yellow-500"></i>
         <a href="study_zone.html" class="text-gray-600"><i class="fa-solid fa-book-open"></i></a>
         <a href="quiz.html" class="text-gray-600"><i class="fa-solid fa-pen-nib"></i></a>
         <a href="mstore.html" class="text-gray-600"><i class="fa-solid fa-store"></i></a>
@@ -85,53 +89,51 @@
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
 
         const userPhone = localStorage.getItem('mUserPhone');
-        
-        function syncProfileDashboard() {
+
+        function startDashboardSync() {
             if(!userPhone) return location.href = 'index.html';
             const safePhone = userPhone.replace(/[^0-9]/g, "");
 
             database.ref(`students/${safePhone}`).on('value', snap => {
-                const u = snap.val() || {};
-                document.getElementById('usrName').innerText = u.name || "Aspirant";
-                document.getElementById('initialMark').innerText = (u.name || "A").charAt(0).toUpperCase();
-                document.getElementById('dreamDisplay').innerText = u.dreamCollege || "Not Assigned";
-                document.getElementById('coinDisplay').innerText = u.coins || 0;
-                document.getElementById('trackHours').innerText = (u.hoursSpent || 0) + "m";
-                document.getElementById('trackSolved').innerText = u.questionsSolved || 0;
-                
-                // Experience points scaling system logic for 10 ranks tier
-                const xp = u.xp || 0;
-                let rank = "Aspirant";
-                if(xp > 100) rank = "Med Student"; if(xp > 300) rank = "Intern"; if(xp > 600) rank = "House Staff";
-                if(xp > 1000) rank = "Resident"; if(xp > 1500) rank = "Registrar"; if(xp > 2200) rank = "Specialist";
-                if(xp > 3000) rank = "Consultant"; if(xp > 4000) rank = "Professor"; if(xp > 5500) rank = "Surgeon General";
-                document.getElementById('trackRank').innerText = rank;
+                const data = snap.val() || {};
+                document.getElementById('profileDashboardUserTitle').innerText = data.name || "Aspirant";
+                document.getElementById('profileBadgeText').innerText = (data.name || "A").charAt(0).toUpperCase();
+                document.getElementById('dreamCollegeHeadlineText').innerText = data.dreamCollege || "Not Configured";
+                document.getElementById('walletCoinText').innerText = data.coins || 0;
+                document.getElementById('statsHoursText').innerText = (data.hoursSpent || 0) + "m";
+                document.getElementById('statsMcqText').innerText = data.questionsSolved || 0;
+
+                // 10 Level Medical Ranks XP Progression Engine mapping calculations loops
+                const xp = data.xp || 0;
+                let activeRank = "Aspirant";
+                if(xp > 100) activeRank = "Med Student"; if(xp > 300) activeRank = "Intern"; if(xp > 600) activeRank = "House Staff";
+                if(xp > 1000) activeRank = "Resident"; if(xp > 1500) activeRank = "Registrar"; if(xp > 2200) activeRank = "Specialist";
+                if(xp > 3000) activeRank = "Consultant"; if(xp > 4000) activeRank = "Professor"; if(xp > 5500) activeRank = "Surgeon General";
+                document.getElementById('statsRankBadgeText').innerText = activeRank;
             });
         }
 
-        // Live Countdown Clock Calculation Engine Configuration (Target fixed to NEET Standard framework)
-        function startLiveCountdown() {
-            const examDate = new Date("May 3, 2026 14:00:00").getTime();
+        function calculateCountdown() {
+            const examTimestamp = new Date("May 3, 2026 14:00:00").getTime();
             setInterval(() => {
-                const now = new Date().getTime();
-                const diff = examDate - now;
+                const now = new Date().getTime(); const diff = examTimestamp - now;
                 if(diff <= 0) return;
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById('cdDays').innerText = days < 10 ? "0"+days : days;
-                document.getElementById('cdHours').innerText = hours < 10 ? "0"+hours : hours;
-                document.getElementById('cdMins').innerText = mins < 10 ? "0"+mins : mins;
-                document.getElementById('cdSecs').innerText = secs < 10 ? "0"+secs : secs;
+                document.getElementById('daysDisplay').innerText = Math.floor(diff / (1000*60*60*24));
+                document.getElementById('hoursDisplay').innerText = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                document.getElementById('minsDisplay').innerText = Math.floor((diff % (1000*60*60)) / (1000*60));
+                document.getElementById('secsDisplay').innerText = Math.floor((diff % (1000*60)) / 1000);
             }, 1000);
         }
 
-        syncProfileDashboard();
-        startLiveCountdown();
+        function launchMotivationalStoryPopup(msg, src) {
+            document.getElementById('storyMessageBodyText').innerText = msg;
+            document.getElementById('storySourceLabel').innerText = src.toUpperCase();
+            document.getElementById('storyPopupModalOverlay').style.display = 'flex';
+        }
+        function closeStoryPopup() { document.getElementById('storyPopupModalOverlay').style.display = 'none'; }
+
+        startDashboardSync(); calculateCountdown();
     </script>
 </body>
-              </html>
-          
+        </html>
+    
