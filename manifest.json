@@ -1,0 +1,22 @@
+{
+  "short_name": "mNEET",
+  "name": "mNEET Learning Web App Engine",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#070b14",
+  "theme_color": "#16213e",
+  "display": "standalone",
+  "orientation": "portrait"
+}
+
