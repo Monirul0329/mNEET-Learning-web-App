@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart NCERT Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Themes Matrix Config */
+        body.theme-white { background: #ffffff; color: #111827; }
+        body.theme-sepia { background: #f4ecd8; color: #433422; }
+        body.theme-night { background: #070b14; color: #e5e7eb; }
+
+        .glass-panel { background: rgba(22, 33, 62, 0.95); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.1); }
+        .text-content-area p { margin-bottom: 1.5rem; line-height: 1.8; font-size: 15px; font-weight: 500; position: relative; padding: 4px 8px; transition: all 0.3s; }
+        
+        /* Active Line Highlight Overlays */
+        .theme-white .active-line { background: rgba(234, 179, 8, 0.25); border-left: 4px solid #eab308; border-radius: 4px; }
+        .theme-sepia .active-line { background: rgba(67, 52, 34, 0.15); border-left: 4px solid #433422; border-radius: 4px; }
+        .theme-night .active-line { background: rgba(59, 130, 246, 0.25); border-left: 4px solid #3b82f6; border-radius: 4px; }
+
+        .pyq-tag-bubble { position: absolute; right: -12px; top: -8px; background: #ef4444; color: white; font-size: 8px; font-weight: 900; padding: 2px 6px; rounded-full: true; border-radius: 9999px; cursor: pointer; border: 1px solid white; animation: floatPulse 2s infinite; }
+        @keyframes floatPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 8px #ef4444; } 100% { transform: scale(1); } }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="theme-night flex flex-col h-screen transition-colors duration-300" id="readerBody">
+
+    <!-- Top Toolbar with Tri-Theme Switches -->
+    <div class="h-[65px] bg-[#16213e] flex justify-between items-center px-5 border-b border-white/5 z-50 text-white">
+        <button onclick="location.href='study.html'" class="text-gray-400 active:scale-90"><i class="fa-solid fa-chevron-left text-lg"></i></button>
+        <h2 id="readerChapterTitle" class="text-xs font-black uppercase italic tracking-wider text-yellow-500">NCERT Engine</h2>
+        
+        <!-- Contextual Switches Dropdown Control Grid -->
+        <div class="flex items-center gap-2">
+            <button onclick="switchContextTheme('white')" class="w-6 h-6 rounded-full bg-white border border-gray-300" title="Classic White"></button>
+            <button onclick="switchContextTheme('sepia')" class="w-6 h-6 rounded-full bg-[#f4ecd8] border border-amber-900/30" title="Retro Sepia"></button>
+            <button onclick="switchContextTheme('night')" class="w-6 h-6 rounded-full bg-[#070b14] border border-blue-500/30" title="Pitch Night"></button>
+        </div>
+    </div>
+
+    <!-- Immersive Reading Document Viewport Container -->
+    <div class="flex-1 overflow-y-auto p-6 scroll-smooth" id="textViewport">
+        <div class="text-content-area max-w-xl mx-auto space-y-4" id="chapterTextDataContent">
+            <!-- Simulated scraped layout array parsed directly dynamically below -->
+            <p id="line_0">Cell is the fundamental structural and functional unit of all living organisms. Anton von Leeuwenhoek first saw and described a live cell.</p>
+            <p id="line_1" class="relative">Robert Brown later discovered the nucleus. The invention of the microscope and its improvement leading to the electron microscope revealed all the structural details of the cell.<span class="pyq-tag-bubble" onclick="triggerPyqModal('NEET 2019: Who discovered the cells core functional nucleus component?', 'Robert Brown')">NEET 2019</span></p>
+            <p id="line_2">Schleiden and Schwann together formulated the cell theory. This theory however, did not explain how new cells were formed.</p>
+            <p id="line_3" class="relative">Rudolf Virchow first explained that cells divided and new cells are formed from pre-existing cells (Omnis cellula-e cellula).<span class="pyq-tag-bubble" onclick="triggerPyqModal('NEET 2022: What does the historical statements biological definition OMNIS CELLULA-E CELLULA mean inside cell splits?', 'Cells arise from pre-existing cells')">NEET 2022</span></p>
+            <p id="line_4">They modified the hypothesis of Schleiden and Schwann to give the cell theory a final shape. Cell theory as understood today is: all living organisms are composed of cells and products of cells.</p>
+        </div>
+    </div>
+
+    <!-- Google Voice Automated Synthesis Speech Controller Base Panel -->
+    <div class="glass-panel p-5 space-y-3 z-50 text-white">
+        <div class="flex justify-between items-center max-w-xl mx-auto">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleVoiceSpeechPlayback()" id="masterVoiceControlBtn" class="w-12 h-12 bg-yellow-500 text-black rounded-full flex items-center justify-center text-xl shadow-lg active:scale-90 transition-all">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-wide italic" id="speechPlaybackStatus">Voice Engine Ready</p>
+                    <p class="text-[7px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Google Speech Synthesis Connected</p>
+                </div>
+            </div>
+            
+            <!-- Speed Modulation Rig Controller Array -->
+            <div class="bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-2">
+                <i class="fa-solid fa-bolt text-yellow-500 text-[9px]"></i>
+                <select id="speechRateRig" onchange="adjustRigSpeedRate()" class="bg-transparent text-[9px] font-black outline-none cursor-pointer">
+                    <option value="0.75" class="bg-[#16213e]">0.75x</option>
+                    <option value="1" selected class="bg-[#16213e]">1.0x</option>
+                    <option value="1.5" class="bg-[#16213e]">1.5x</option>
+                    <option value="2" class="bg-[#16213e]">2.0x</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Past Year Tag Result Summary Modal Sheet Layout -->
+    <div id="pyqChallengeModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-black">
+        <div class="bg-white rounded-[2.2rem] w-full max-w-sm p-6 shadow-2xl border border-white/10">
+            <span class="text-[8px] font-black uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded tracking-widest italic">NTA PYQ CHALLENGE TARGET</span>
+            <h3 id="pyqQuestionDisplay" class="text-sm font-bold my-4 leading-snug">Question Text Loading...</h3>
+            <div class="p-4 bg-green-50 rounded-2xl border border-green-200/50 mb-5">
+                <span class="text-[7px] font-black text-green-700 uppercase block tracking-wider">Correct Answer Reference:</span>
+                <p id="pyqAnswerDisplay" class="text-xs font-black text-green-900 mt-1">Answer Reference Loading...</p>
+            </div>
+            <button onclick="closePyqModal()" class="w-full bg-slate-900 py-3.5 text-white font-black text-xs uppercase rounded-xl active:scale-95 transition-all">Got it, Resume Reading</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const chName = params.get('name') || "Smart NCERT Chapter";
+        document.getElementById('readerChapterTitle').innerText = chName;
+
+        let speechSynth = window.speechSynthesis;
+        let speechUtterance = null;
+        let currentLineIndex = 0;
+        let totalParagraphLines = 5; // Static tracking node limit matches internal mock array elements
+        let isSpeakingActive = false;
+
+        // Dynamic Switch Theme Setup Logic Model Parameters Trigger (White/Sepia/Night Toggle)
+        function switchContextTheme(targetStyle) {
+            const body = document.getElementById('readerBody');
+            body.className = ""; // Wipe base styling tokens
+            body.classList.add('theme-' + targetStyle);
+        }
+
+        // Speech Parsing Execution Engine Framework Loops
+        function parseCurrentLineTextStream() {
+            if (speechSynth.speaking) speechSynth.cancel();
+
+            const targetLine = document.getElementById(`line_${currentLineIndex}`);
+            if (!targetLine) {
+                resetVoiceEngineUI();
+                return;
+            }
+
+            // Remove previous highlights structure line elements
+            document.querySelectorAll('.text-content-area p').forEach(el => el.classList.remove('active-line'));
+            targetLine.classList.add('active-line');
+            
+            // Auto Viewport Focus Center Tracking Calculations Smooth Scroll
+            document.getElementById('textViewport').scrollTo({
+                top: targetLine.offsetTop - 150,
+                behavior: 'smooth'
+            });
+
+            // Isolate pure reading string data content excluding structural label metadata texts
+            let cleanStringText = targetLine.firstChild.textContent;
+
+            speechUtterance = new SpeechSynthesisUtterance(cleanStringText);
+            speechUtterance.rate = parseFloat(document.getElementById('speechRateRig').value);
+            
+            speechUtterance.onend = () => {
+                if (isSpeakingActive && currentLineIndex < totalParagraphLines - 1) {
+                    currentLineIndex++;
+                    parseCurrentLineTextStream();
+                } else {
+                    resetVoiceEngineUI();
+                }
+            };
+
+            speechUtterance.onerror = () => resetVoiceEngineUI();
+            speechSynth.speak(speechUtterance);
+        }
+
+        function toggleVoiceSpeechPlayback() {
+            if (!isSpeakingActive) {
+                isSpeakingActive = true;
+                document.getElementById('masterVoiceControlBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                document.getElementById('speechPlaybackStatus').innerText = "Streaming Audio Narration...";
+                parseCurrentLineTextStream();
+            } else {
+                isSpeakingActive = false;
+                speechSynth.cancel();
+                document.getElementById('masterVoiceControlBtn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                document.getElementById('speechPlaybackStatus').innerText = "Narration Paused";
+            }
+        }
+
+        function adjustRigSpeedRate() {
+            if (isSpeakingActive) {
+                parseCurrentLineTextStream(); // Hot-reboot speech matrix string parsing with target modifier updates
+            }
+        }
+
+        function resetVoiceEngineUI() {
+            isSpeakingActive = false;
+            currentLineIndex = 0;
+            speechSynth.cancel();
+            document.getElementById('masterVoiceControlBtn').innerHTML = '<i class="fa-solid fa-play"></i>';
+            document.getElementById('speechPlaybackStatus').innerText = "Session Completed";
+            document.querySelectorAll('.text-content-area p').forEach(el => el.classList.remove('active-line'));
+        }
+
+        // PYQ Interactive Overlay Modal Sheet Methods
+        function triggerPyqModal(question, answer) {
+            if(isSpeakingActive) toggleVoiceSpeechPlayback(); // Halt ongoing voice streams instantly to prevent auditory collision
+            document.getElementById('pyqQuestionDisplay').innerText = question;
+            document.getElementById('pyqAnswerDisplay').innerText = answer;
+            document.getElementById('pyqChallengeModal').style.display = 'flex';
+        }
+
+        function closePyqModal() {
+            document.getElementById('pyqChallengeModal').style.display = 'none';
+        }
+
+        // Clean stack tracking termination on tab sweep closures
+        window.onbeforeunload = () => { speechSynth.cancel(); };
+    </script>
+</body>
+                      </html>
+  
