@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mNEET Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="w-full max-w-sm glass p-8 rounded-[2.5rem] border border-white/5 shadow-2xl text-center space-y-6">
+        <div>
+            <h1 class="text-2xl font-black uppercase italic text-blue-500 tracking-tighter">mNEET ASPIRANT</h1>
+            <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">Gateway Entry Verification System</p>
+        </div>
+
+        <div class="space-y-3 text-left">
+            <div>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1 tracking-wider">Aspirant Name</label>
+                <input type="text" id="studentName" placeholder="Enter Full Name..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1 tracking-wider">Phone Number (Secure Login)</label>
+                <input type="tel" id="studentPhone" placeholder="+91 XXXXX XXXXX" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1 tracking-wider">Target Exam Year</label>
+                <select id="targetYear" class="w-full p-4 rounded-2xl bg-[#070b14] border border-white/10 outline-none text-xs text-white font-bold mt-1">
+                    <option value="NEET 2026">NEET 2026</option>
+                    <option value="NEET 2027">NEET 2027</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[8px] font-black uppercase text-yellow-500 pl-1 tracking-wider">🎯 Dream Medical College Goal</label>
+                <input type="text" id="dreamCollege" placeholder="e.g. AIIMS Delhi, JIPMER..." class="w-full p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/20 outline-none text-xs text-yellow-400 font-bold mt-1">
+            </div>
+        </div>
+
+        <button onclick="processSecureLogin()" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white shadow-lg active:scale-95 transition-all">
+            Verify & Create Profile
+        </button>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
+        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+
+        function processSecureLogin() {
+            const name = document.getElementById('studentName').value.trim();
+            const phone = document.getElementById('studentPhone').value.trim();
+            const year = document.getElementById('targetYear').value;
+            const college = document.getElementById('dreamCollege').value.trim();
+
+            if (!name || !phone || !college) return alert("Please fill all deployment parameters fully!");
+
+            // Local storage profile write sequence
+            localStorage.setItem('mUserPhone', phone);
+            localStorage.setItem('mUserName', name);
+            localStorage.setItem('selectedBatchId', "B001"); // Default configuration routing
+
+            const safePhone = phone.replace(/[^0-9]/g, "");
+            
+            database.ref(`students/${safePhone}`).set({
+                name: name, phone: phone, targetYear: year, dreamCollege: college, coins: 100, xp: 0, hoursSpent: 0, questionsSolved: 0, timestamp: Date.now()
+            }).then(() => {
+                location.href = 'dashboard.html';
+            }).catch(err => alert("Database Sync Error: " + err.message));
+        }
+    </script>
+</body>
+              </html>
+
