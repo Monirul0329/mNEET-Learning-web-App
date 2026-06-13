@@ -2,104 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NTA Practice Simulator</title>
+    <title>NTA Simulator Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Strict Environment Switching Layout Patterns */
         body.mode-dashboard { background: #070b14; color: white; }
         body.mode-exam-strict { background: #ffffff !important; color: #000000 !important; }
-
         .glass-card { background: rgba(22, 33, 62, 0.7); border: 1px solid rgba(255,255,255,0.08); }
         .strict-card { background: #f8fafc; border: 2px solid #e2e8f0; color: #000000; }
-        
-        .option-btn { transition: all 0.2s; text-align: left; padding: 1rem; border-radius: 1rem; font-weight: 600; font-size: 13px; width: 100%; display: flex; align-items: center; justify-content: space-between; }
-        ::-webkit-scrollbar { width: 0px; }
+        .option-btn { width: 100%; text-align: left; padding: 1rem; border-radius: 1rem; font-weight: 600; font-size: 13px; display: block; border: 2px solid #e2e8f0; margin-bottom: 0.5rem; background: white; color: black; }
     </style>
 </head>
-<body class="mode-dashboard p-4 pb-32 transition-colors duration-300" id="quizBodyFrame">
+<body class="mode-dashboard p-4" id="quizBodyFrame">
 
-    <!-- Top Navigation Row Component -->
-    <div id="topQuizHeader" class="flex justify-between items-center mb-6 px-1 mt-2">
-        <div class="flex items-center gap-4">
-            <button onclick="location.href='study_zone.html'" class="w-10 h-10 bg-white/5 border border-white/10 text-gray-400 rounded-2xl flex items-center justify-center id-back-btn"><i class="fa-solid fa-chevron-left"></i></button>
-            <div>
-                <h1 class="text-xl font-black italic text-purple-500 uppercase tracking-tighter" id="hubTitle">PRO-QUIZ HUB</h1>
-                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">NTA Core Evaluation Interface</p>
-            </div>
-        </div>
+    <div id="dashboardHeaderRow" class="flex justify-between items-center mb-6 mt-2">
+        <h1 class="text-xl font-black italic text-purple-500 uppercase">PRO-EXAM SIMULATOR</h1>
+        <button onclick="location.href='error_book.html'" class="px-3 py-1.5 bg-red-600/10 border border-red-500/20 text-red-500 rounded-xl font-black text-[9px] uppercase italic"><i class="fa-solid fa-book-bookmark mr-1"></i> Open Error Book</button>
     </div>
 
-    <!-- Active Topics Router Lists Matrix Container -->
-    <div class="space-y-4" id="topicSelectionDashboardList">
-        <div onclick="launchStrictSimulator('Cell Mechanics Session')" class="glass-card p-5 rounded-[2.2rem] flex justify-between items-center cursor-pointer border border-white/5 shadow-md active:scale-95 transition-all">
+    <div class="space-y-4" id="topicsListArea">
+        <div onclick="launchStrictExamMode()" class="glass-card p-5 rounded-[2.2rem] flex justify-between items-center cursor-pointer border border-white/5 shadow-md">
             <div class="flex items-center gap-4">
-                <div class="w-11 h-11 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid fa-vial"></i></div>
-                <div>
-                    <h4 class="text-xs font-black uppercase italic tracking-wide text-white">Cell Structure Practice Set</h4>
-                    <p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">Contains Target NCERT Link-Back Nodes</p>
-                </div>
+                <div class="w-11 h-11 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid fa-stopwatch"></i></div>
+                <div><h4 class="text-xs font-black uppercase italic">Cell Cycle High-Speed Mock</h4><p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">NTA Core Interface Dual-Timer Mode</p></div>
             </div>
-            <i class="fa-solid fa-circle-play text-purple-500 text-lg"></i>
+            <i class="fa-solid fa-chevron-right text-purple-500 text-xs"></i>
         </div>
     </div>
 
-    <!-- Immersive Strict Exam Simulator Interface Layer Screen -->
-    <div id="strictExamSimulatorViewport" class="hidden fixed inset-0 z-[100] p-6 flex flex-col overflow-y-auto">
-        
-        <!-- Dual Timer Info Banner Row -->
-        <div class="flex justify-between items-center pb-4 border-b-2 border-slate-200 mb-6 text-black">
-            <div>
-                <span class="text-[7px] font-black uppercase bg-slate-900 text-white px-2 py-0.5 rounded italic" id="simulatorTypeBadge">EXAM SIMULATOR</span>
-                <h4 class="text-xs font-black uppercase italic mt-1" id="activeExamTopicName">Syllabus Practice</h4>
-            </div>
-            <div class="text-right">
-                <span class="text-[6px] font-black text-slate-400 uppercase tracking-widest block">RUNNING SESSION TIMELINES</span>
-                <!-- Dual rendering components container maps time loops values -->
-                <p class="text-sm font-black italic text-slate-800" id="simulatorTimerClockDisplay">00:00</p>
-            </div>
+    <div id="strictExamViewport" class="hidden fixed inset-0 p-6 flex flex-col bg-white text-black z-[100]">
+        <div class="flex justify-between items-center pb-4 border-b-2 border-slate-200 mb-6">
+            <h4 class="text-xs font-black uppercase italic text-slate-800">NTA STRICTOR EVALUATION MODE</h4>
+            <p class="text-sm font-black text-red-600 italic" id="clockTimerDisplay">00:00</p>
         </div>
 
-        <!-- Question Challenge Box Area Content Components -->
-        <div class="strict-card p-6 rounded-[2rem] space-y-4 flex-1 flex flex-col justify-between">
+        <div class="strict-card p-6 rounded-[2rem] flex-1 flex flex-col justify-between">
             <div>
-                <span class="text-[8px] font-black text-blue-600 uppercase tracking-widest block mb-1">QUESTION SPECIFICATION</span>
-                <h2 class="text-sm font-bold text-slate-900 leading-snug mb-6" id="simulatorQuestionText">Which of the following organic structures first explained that cell replication emerges from pre-existing active line matrices splits?</h2>
-                
-                <div class="space-y-2" id="simulatorOptionsContainer">
-                    <!-- Standard options array buttons loaded below -->
-                    <button onclick="evaluateSimulatorChoice('A', this)" class="option-btn bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50">A. Anton von Leeuwenhoek</button>
-                    <button onclick="evaluateSimulatorChoice('B', this)" class="option-btn bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50">B. Rudolf Virchow</button>
-                    <button onclick="evaluateSimulatorChoice('C', this)" class="option-btn bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50">C. Robert Brown</button>
-                    <button onclick="evaluateSimulatorChoice('D', this)" class="option-btn bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50">D. Theodore Schwann</button>
+                <h2 class="text-sm font-bold text-slate-900 leading-snug mb-6">Who first formulation framework criteria details parameters explained that cell replication emerges from pre-existing splitting loops?</h2>
+                <div id="optionsWrapper">
+                    <button onclick="verifySimulatorAnswer('A', this)" class="option-btn">A. Anton von Leeuwenhoek</button>
+                    <button onclick="verifySimulatorAnswer('B', this)" class="option-btn">B. Rudolf Virchow</button>
+                    <button onclick="verifySimulatorAnswer('C', this)" class="option-btn">C. Robert Brown</button>
                 </div>
-            </div>
-
-            <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
-                <button onclick="abortSimulatorSession()" class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Abort Exam</button>
-                <div class="bg-blue-50 px-3 py-1.5 rounded-xl text-[8px] font-black text-blue-600 uppercase italic" id="reattemptTargetLog">Reattempt Target: &lt; 15s Speed Up</div>
             </div>
         </div>
     </div>
 
-    <!-- Interactive NCERT Link-Back Redirector Summary Pop Model Viewport -->
-    <div id="ncertLinkBackModal" class="fixed inset-0 bg-black/95 z-[200] hidden items-center justify-center p-6 text-black">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-6 shadow-2xl border border-red-200">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-lg mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <span class="text-[8px] font-black uppercase text-red-600 tracking-widest block italic">INCORRECT SELECTION RECORDED</span>
-            <h3 class="text-sm font-bold my-3 text-slate-900 leading-snug">Your answer variant optimization failed validation checks matching textbook accuracy standard criteria.</h3>
-            
-            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/60 mb-5">
-                <span class="text-[7px] font-black text-amber-800 uppercase tracking-widest block">NCERT LINK-BACK LOGIC LOCATION REFERENCE:</span>
-                <p class="text-[11px] font-bold text-slate-800 mt-1">Biology Textbook Class 11, Chapter 10, Page 168 (Paragraph 2, Line 3)</p>
-            </div>
-
-            <div class="flex gap-2">
-                <button onclick="redirectToNcertBooster()" class="flex-1 bg-blue-600 py-3.5 text-white font-black text-[10px] uppercase rounded-xl tracking-wider shadow-md active:scale-95 transition-all"><i class="fa-solid fa-book-open mr-1"></i> View NCERT Line</button>
-                <button onclick="closeLinkBackModal()" class="px-4 py-3.5 bg-slate-100 text-slate-600 font-black text-[10px] uppercase rounded-xl active:scale-95 transition-all">Close</button>
-            </div>
+    <div id="linkBackPopupModalOverlay" class="fixed inset-0 bg-black/95 z-[200] hidden items-center justify-center p-6 text-black">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-6 shadow-2xl">
+            <span class="text-[8px] font-black uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded block tracking-widest italic text-center">COMPILER EXAM ERROR LOGGED</span>
+            <h3 class="text-xs font-bold my-4 text-slate-800 leading-relaxed text-center">Incorrect input choice! This question data reference has been appended into your personalized Error Book node.</h3>
+            <button onclick="redirectToNcertReaderConsoleLink()" class="w-full bg-blue-600 py-4 text-white font-black text-[10px] uppercase rounded-xl tracking-wider shadow-md"><i class="fa-solid fa-book-open mr-1"></i> View NCERT Solution</button>
         </div>
     </div>
 
@@ -107,135 +62,36 @@
         const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
         const userPhone = localStorage.getItem('mUserPhone') || "9999999999";
+        let timer = null; let seconds = 0;
 
-        let timerInterval = null;
-        let elapsedSeconds = 0;
-        let countdownSeconds = 120; // 2 minutes countdown ceiling limit for custom mock models
-        let activeTimerMode = "FORWARD"; // FORWARD or COUNTDOWN tracking loop parameters selector
-        const correctSolutionKey = "B"; // Rudolf Virchow validation token
+        function launchStrictExamMode() {
+            document.getElementById('quizBodyFrame').className = "bg-white text-black p-6 h-screen flex flex-col";
+            document.getElementById('dashboardHeaderRow').classList.add('hidden');
+            document.getElementById('topicsListArea').classList.add('hidden');
+            document.getElementById('strictExamViewport').classList.remove('hidden');
 
-        function launchStrictSimulator(topicTitle) {
-            // Step 1: Interface context transition logic switch force state
-            const body = document.getElementById('quizBodyFrame');
-            body.className = "mode-exam-strict flex flex-col h-screen";
-            
-            document.getElementById('topQuizHeader').classList.add('hidden');
-            document.getElementById('topicSelectionDashboardList').classList.add('hidden');
-            document.getElementById('strictExamSimulatorViewport').classList.remove('hidden');
+            timer = setInterval(() => { seconds++; document.getElementById('clockTimerDisplay').innerText = new Date(seconds * 1000).toISOString().substr(14, 5); }, 1000);
+        }
 
-            document.getElementById('activeExamTopicName').innerText = topicTitle;
-
-            // Trigger random selection filter to showcase either forward regular practice or strict count loops
-            if(Math.random() > 0.5) {
-                activeTimerMode = "FORWARD";
-                document.getElementById('simulatorTypeBadge').innerText = "PRACTICE RUN: FORWARD TIMER ACTIVE";
-                runForwardTimerLoop();
+        function verifySimulatorAnswer(key, btn) {
+            clearInterval(timer);
+            if(key === "B") {
+                btn.classList.add('bg-green-500', 'text-white');
+                alert("Correct Answer!"); location.reload();
             } else {
-                activeTimerMode = "COUNTDOWN";
-                document.getElementById('simulatorTypeBadge').innerText = "MOCK SIMULATOR: COUNTDOWN TIME BLOCK";
-                runCountdownTimerLoop();
-            }
-        }
-
-        // Forward Timer loop structural controller method
-        function runForwardTimerLoop() {
-            elapsedSeconds = 0;
-            timerInterval = setInterval(() => {
-                elapsedSeconds++;
-                document.getElementById('simulatorTimerClockDisplay').innerText = formatTimerOutput(elapsedSeconds);
-            }, 1000);
-        }
-
-        // Countdown Timer loop computational logic
-        function runCountdownTimerLoop() {
-            countdownSeconds = 120;
-            timerInterval = setInterval(() => {
-                countdownSeconds--;
-                if(countdownSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    alert("Time limit threshold breached! Terminating exam simulation sheet.");
-                    abortSimulatorSession();
-                }
-                document.getElementById('simulatorTimerClockDisplay').innerText = formatTimerOutput(countdownSeconds);
-            }, 1000);
-        }
-
-        function evaluateSimulatorChoice(selectedOption, buttonElement) {
-            clearInterval(timerInterval);
-            
-            // Standardize button options interaction states instantly within viewport
-            document.querySelectorAll('#simulatorOptionsContainer button').forEach(b => {
-                b.disabled = true;
-                b.classList.add('opacity-50');
-            });
-            buttonElement.classList.remove('opacity-50');
-
-            if (selectedOption === correctSolutionKey) {
-                buttonElement.classList.remove('border-slate-200');
-                buttonElement.classList.add('bg-green-500', 'text-white', 'border-green-600');
+                btn.classList.add('bg-red-500', 'text-white');
                 
-                // Write point data telemetry logs directly to user profile analytics node
+                // Blueprint Step 5: Automated Error Book entry push parameters logic map
                 const safePhone = userPhone.replace(/[^0-9]/g, "");
-                database.ref(`students/${safePhone}`).once('value', s => {
-                    const d = s.val() || {};
-                    const currentSolved = d.questionsSolved || 0;
-                    const currentXp = d.xp || 0;
-                    const currentCoins = d.coins || 0;
-
-                    database.ref(`students/${safePhone}`).update({
-                        questionsSolved: currentSolved + 1,
-                        xp: currentXp + 25, // Award Experience points tracking parameters
-                        coins: currentCoins + 10 // Payout coin tokens base
-                    }).then(() => {
-                        setTimeout(() => {
-                            alert("Excellent! Secure validation token recorded. Rewards added to user database wallet.");
-                            abortSimulatorSession();
-                        }, 1200);
-                    });
+                database.ref(`students/${safePhone}/errorBook`).push({
+                    question: "Who first formulation framework criteria details parameters explained that cell replication emerges from pre-existing splitting loops?",
+                    wrongAnswerKey: key, correctAnswerKey: "B", textbookLocation: "Biology Class 11, Chapter 10, Page 168", timestamp: Date.now()
+                }).then(() => {
+                    setTimeout(() => { document.getElementById('linkBackPopupModalOverlay').style.display = 'flex'; }, 600);
                 });
-            } else {
-                buttonElement.classList.remove('border-slate-200');
-                buttonElement.classList.add('bg-red-500', 'text-white', 'border-red-600');
-                
-                setTimeout(() => {
-                    document.getElementById('ncertLinkBackModal').style.display = 'flex';
-                }, 800);
             }
         }
-
-        function abortSimulatorSession() {
-            clearInterval(timerInterval);
-            const body = document.getElementById('quizBodyFrame');
-            body.className = "mode-dashboard p-4 pb-32 transition-colors duration-300";
-            
-            document.getElementById('topQuizHeader').classList.remove('hidden');
-            document.getElementById('topicSelectionDashboardList').classList.remove('hidden');
-            document.getElementById('strictExamSimulatorViewport').classList.add('hidden');
-
-            // Reset interaction states parameters completely
-            document.querySelectorAll('#simulatorOptionsContainer button').forEach(b => {
-                b.disabled = false;
-                b.className = "option-btn bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50";
-            });
-        }
-
-        function redirectToNcertBooster() {
-            closeLinkBackModal();
-            abortSimulatorSession();
-            // Fire transition request parameters map directly target core ncert reader console page location route
-            location.href = `./ncert_reader.html?ch=ch10&name=${encodeURIComponent('Cell Cycle and Cell Division')}`;
-        }
-
-        function closeLinkBackModal() {
-            document.getElementById('ncertLinkBackModal').style.display = 'none';
-            abortSimulatorSession();
-        }
-
-        function formatTimerOutput(totalSeconds) {
-            const m = Math.floor(totalSeconds / 60); const s = totalSeconds % 60;
-            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-        }
+        function redirectToNcertReaderConsoleLink() { location.href = `./ncert_reader.html?ch=ch10&name=${encodeURIComponent('Cell Cycle and Cell Division')}`; }
     </script>
 </body>
-  </html>
-                      
+</html>
