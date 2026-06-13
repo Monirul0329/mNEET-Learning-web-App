@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Materials Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .red-glow { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Header Navigation -->
+    <div class="flex justify-between items-center mb-8 px-1 mt-2">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='study_zone.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+            <div>
+                <h1 class="text-xl font-black italic red-glow uppercase tracking-tighter">PREMIUM HUB</h1>
+                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">High-Yield Booster Sheets</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active List Grid Wrapper Container -->
+    <div class="space-y-4" id="specialMaterialsList">
+        <!-- Default Live Data Static fallbacks for immediate testing verification -->
+        <div class="glass p-5 rounded-[2.2rem] flex justify-between items-center border border-white/5 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500"><i class="fa-solid fa-file-pdf"></i></div>
+                <div>
+                    <h4 class="text-xs font-black uppercase italic tracking-wide text-white">Mitosis NCERT Formula Sheet</h4>
+                    <p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">Exclusive High-Speed Revision PDF</p>
+                </div>
+            </div>
+            <a href="https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/biology/keey110.pdf" target="_blank" class="w-9 h-9 glass rounded-full flex items-center justify-center text-gray-400 active:scale-90"><i class="fa-solid fa-download text-xs"></i></a>
+        </div>
+
+        <div class="glass p-5 rounded-[2.2rem] flex justify-between items-center border border-white/5 shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500"><i class="fa-solid fa-file-pdf"></i></div>
+                <div>
+                    <h4 class="text-xs font-black uppercase italic tracking-wide text-white">Biomolecules Crisp Point Tables</h4>
+                    <p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">Protein Structures Memory Matrix</p>
+                </div>
+            </div>
+            <a href="https://ncert.nic.in/textbook/pdf/kebo109.pdf" target="_blank" class="w-9 h-9 glass rounded-full flex items-center justify-center text-gray-400 active:scale-90"><i class="fa-solid fa-download text-xs"></i></a>
+        </div>
+    </div>
+
+</body>
+</html>
+
