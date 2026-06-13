@@ -1,147 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mNEET Integrated Gateway</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mNEET Gateway Registry</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .glass { background: rgba(22, 33, 62, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
 <body class="p-4">
 
     <div class="w-full max-w-sm glass p-8 rounded-[2.5rem] border border-white/5 shadow-2xl text-center space-y-5">
         <div>
-            <h1 class="text-2xl font-black uppercase italic text-blue-500 tracking-tighter">mNEET PORTAL</h1>
-            <p class="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">Unified Gateway System Interface</p>
+            <h1 class="text-2xl font-black uppercase italic text-blue-500 tracking-tighter">mNEET ENTERPRISE</h1>
+            <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">Identity & Security Authentication Control</p>
         </div>
 
-        <!-- Tab Navigators Switchers -->
-        <div class="flex justify-around border-b border-white/10 pb-2 text-xs font-black uppercase tracking-wider">
-            <button id="tabSignInBtn" onclick="toggleAuthTab('SIGNIN')" class="tab-active pb-1 px-4 transition-all">Sign In</button>
-            <button id="tabSignUpBtn" onclick="toggleAuthTab('SIGNUP')" class="text-gray-500 pb-1 px-4 transition-all">Sign Up</button>
-        </div>
-
-        <!-- Master Core Dynamic Input Grid Controls -->
-        <div class="space-y-3 text-left">
-            <div id="signUpNameWrapper" class="hidden">
-                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Full Name</label>
-                <input type="text" id="authName" placeholder="Enter Full Name..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+        <!-- Verification Credentials Capture Input Form Center -->
+        <div class="space-y-3 text-left" id="credentialsStepBox">
+            <div>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Aspirant Full Name</label>
+                <input type="text" id="regName" placeholder="Enter Full Name..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
             <div>
-                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Gmail / Email Address</label>
-                <input type="email" id="authEmail" placeholder="username@gmail.com" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Gmail Address (Verification Record)</label>
+                <input type="email" id="regEmail" placeholder="username@gmail.com" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
             <div>
-                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Mobile Phone (10-Digit)</label>
-                <input type="tel" id="authPhone" placeholder="9999999999" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Mobile Phone (10-Digit Matrix)</label>
+                <input type="tel" id="regPhone" placeholder="9999999999" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
-            <div id="adminPasswordWrapper" class="hidden animate-pulse">
-                <label class="text-[8px] font-black uppercase text-red-400 pl-1">🔒 Admin Guard Password Verified</label>
-                <input type="password" id="authAdminPassword" placeholder="••••••••" class="w-full p-4 rounded-2xl bg-red-500/5 border border-red-500/20 outline-none text-xs text-red-400 font-bold mt-1">
-            </div>
-            <div id="signUpGoalWrapper" class="hidden">
+            <div>
                 <label class="text-[8px] font-black uppercase text-yellow-500 pl-1">🎯 Dream Medical College Goal</label>
-                <input type="text" id="authCollege" placeholder="e.g. AIIMS Delhi..." class="w-full p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/20 outline-none text-xs text-yellow-400 font-bold mt-1">
+                <input type="text" id="regCollege" placeholder="e.g. AIIMS Delhi, JIPMER..." class="w-full p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/20 outline-none text-xs text-yellow-400 font-bold mt-1">
             </div>
+            <button onclick="triggerOtpRequest()" class="w-full bg-blue-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white mt-2 active:scale-95 transition-all">Request Secure OTP</button>
         </div>
 
-        <button onclick="processUnifiedAuthenticationGateway()" id="masterAuthActionButton" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white shadow-lg active:scale-95 transition-all">
-            Sign In Platform
-        </button>
+        <!-- OTP Input Validation Verification Deck Box Panel Layer -->
+        <div class="space-y-4 text-left hidden" id="verificationOtpStepBox">
+            <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center">
+                <p class="text-[9px] font-black text-blue-400 uppercase">Verification System Dispatch Loop Safe</p>
+                <p class="text-[7px] text-gray-400 uppercase mt-0.5">Use default authorization sequence: 1234</p>
+            </div>
+            <div>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Enter 4-Digit Validation Key</label>
+                <input type="number" id="otpInputCode" placeholder="0 0 0 0" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-center text-sm tracking-widest text-white font-bold mt-1">
+            </div>
+            <button onclick="verifyOtpToken()" class="w-full bg-green-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white active:scale-95 transition-all">Verify & Boot Platform</button>
+        </div>
     </div>
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
 
-        let currentAuthMode = "SIGNIN";
+        let cachedProfilePayload = {};
 
-        // Listeners arrays processing setup context to trap real-time input fields value mutations
-        document.getElementById('authEmail').addEventListener('input', checkAdminCredentialsInterception);
-        document.getElementById('authPhone').addEventListener('input', checkAdminCredentialsInterception);
+        function triggerOtpRequest() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const college = document.getElementById('regCollege').value.trim();
 
-        function toggleAuthTab(targetMode) {
-            currentAuthMode = targetMode;
-            if(targetMode === "SIGNIN") {
-                document.getElementById('tabSignInBtn').className = "tab-active pb-1 px-4 transition-all";
-                document.getElementById('tabSignUpBtn').className = "text-gray-500 pb-1 px-4 transition-all";
-                document.getElementById('signUpNameWrapper').classList.add('hidden');
-                document.getElementById('signUpGoalWrapper').classList.add('hidden');
-                document.getElementById('masterAuthActionButton').innerText = "Sign In Platform";
-            } else {
-                document.getElementById('tabSignInBtn').className = "text-gray-500 pb-1 px-4 transition-all";
-                document.getElementById('tabSignUpBtn').className = "tab-active pb-1 px-4 transition-all";
-                document.getElementById('signUpNameWrapper').classList.remove('hidden');
-                document.getElementById('signUpGoalWrapper').classList.remove('hidden');
-                document.getElementById('masterAuthActionButton').innerText = "Register New Account";
-            }
-            checkAdminCredentialsInterception();
+            if(!name || !email || phone.length < 10 || !college) return alert("Fill registration metrics parameter values fully!");
+
+            cachedProfilePayload = { name, email, phone, dreamCollege: college };
+            document.getElementById('credentialsStepBox').classList.add('hidden');
+            document.getElementById('verificationOtpStepBox').classList.remove('hidden');
         }
 
-        function checkAdminCredentialsInterception() {
-            const email = document.getElementById('authEmail').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
-            
-            // Hardcoded Strict Administrative verification nodes rule check
-            if(email === "admin@mneet.com" && phone === "9999999999") {
-                document.getElementById('adminPasswordWrapper').classList.remove('hidden');
-                document.getElementById('masterAuthActionButton').className = "w-full bg-red-600 hover:bg-red-700 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white shadow-lg";
-                document.getElementById('masterAuthActionButton').innerText = "Bypass Command Dashboard";
-            } else {
-                document.getElementById('adminPasswordWrapper').classList.add('hidden');
-                document.getElementById('masterAuthActionButton').className = "w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white shadow-lg";
-                document.getElementById('masterAuthActionButton').innerText = currentAuthMode === "SIGNIN" ? "Sign In Platform" : "Register New Account";
-            }
+        function verifyOtpToken() {
+            const token = document.getElementById('otpInputCode').value;
+            if(token !== "1234") return alert("Invalid secure gateway signature verification token!");
+
+            const safePhone = cachedProfilePayload.phone.replace(/[^0-9]/g, "");
+            localStorage.setItem('mUserPhone', safePhone);
+            localStorage.setItem('mUserName', cachedProfilePayload.name);
+            localStorage.setItem('mUserEmail', cachedProfilePayload.email);
+
+            database.ref(`students/${safePhone}`).update({
+                name: cachedProfilePayload.name,
+                email: cachedProfilePayload.email,
+                phone: cachedProfilePayload.phone,
+                dreamCollege: cachedProfilePayload.dreamCollege,
+                coins: 100, xp: 10, hoursSpent: 0, questionsSolved: 0, timestamp: Date.now()
+            }).then(() => { location.href = 'dashboard.html'; });
         }
 
-        function processUnifiedAuthenticationGateway() {
-            const email = document.getElementById('authEmail').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
-            const safePhone = phone.replace(/[^0-9]/g, "");
-
-            if(!email || phone.length < 10) return alert("Please fill out authentication parameters correctly!");
-
-            // Route 1: Target Admin Verification Validation Checks
-            if(email === "admin@mneet.com" && phone === "9999999999") {
-                const adminPass = document.getElementById('authAdminPassword').value;
-                if(adminPass === "mneet2026") {
-                    localStorage.setItem('mUserRole', 'ADMIN');
-                    location.href = 'admin_dashboard.html';
-                } else { alert("Security Block: Invalid Admin Master Guard Password!"); }
-                return;
-            }
-
-            // Route 2: Student Database Interactions Logic Pipelines
-            if(currentAuthMode === "SIGNUP") {
-                const name = document.getElementById('authName').value.trim();
-                const college = document.getElementById('authCollege').value.trim();
-                if(!name || !college) return alert("Please specify full name and your motivation milestone target goals!");
-
-                database.ref(`students/${safePhone}`).set({
-                    name, email, phone: safePhone, dreamCollege: college, coins: 100, xp: 0, hoursSpent: 0, questionsSolved: 0, currentBatch: "NEET 2026 Standard Batch", timestamp: Date.now()
-                }).then(() => { executeStudentSessionBypass(safePhone, name); });
-            } else {
-                // Sign In Processing check parameters
-                database.ref(`students/${safePhone}`).once('value', snap => {
-                    if(snap.exists()) {
-                        const sData = snap.val();
-                        executeStudentSessionBypass(safePhone, sData.name);
-                    } else { alert("Account database index record missing! Switch to Sign Up tab first."); }
-                });
-            }
-        }
-
-        function executeStudentSessionBypass(phone, name) {
-            localStorage.setItem('mUserPhone', phone);
-            localStorage.setItem('mUserName', name);
-            localStorage.setItem('mUserRole', 'STUDENT');
-            location.href = 'dashboard.html';
+        // Progressive Web App verification controller mapping loop hook (Installer Hook)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('PWA Service Worker registered safely:', reg.scope))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
         }
     </script>
 </body>
