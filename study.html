@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCERT Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(22, 33, 62, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background: #070b14; color: white; font-family: sans-serif; min-height: 100vh; }
+        .ch-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .ch-card:active { transform: scale(0.97); opacity: 0.8; }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <!-- Top Navigation Header -->
+    <div class="flex justify-between items-center mb-8 px-1 mt-2">
+        <div class="flex items-center gap-4">
+            <button onclick="location.href='study_zone.html'" class="w-10 h-10 glass rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+            <div>
+                <h1 class="text-xl font-black italic text-yellow-500 uppercase tracking-tighter">NCERT PLATFORM</h1>
+                <p class="text-[7px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Automated Online Textbook Nodes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Chapters Grid Wrapper Container -->
+    <div class="space-y-4" id="chaptersContainer">
+        <!-- Default Static fallback arrays loop for Biology Standard Syllabus core tracks -->
+        <div onclick="launchAutomatedReader('ch8', 'Cell: The Unit of Life')" class="glass p-5 rounded-[2.2rem] flex justify-between items-center ch-card border border-white/5 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-dna"></i></div>
+                <div>
+                    <h4 class="text-xs font-black uppercase italic tracking-wide">Cell: The Unit of Life</h4>
+                    <p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">Google TTS Voice Engine Matrix Ready</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-circle-play text-yellow-500 text-lg"></i>
+        </div>
+
+        <div onclick="launchAutomatedReader('ch10', 'Cell Cycle and Cell Division')" class="glass p-5 rounded-[2.2rem] flex justify-between items-center ch-card border border-white/5 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500"><i class="fa-solid fa-xs"></i></div>
+                <div>
+                    <h4 class="text-xs font-black uppercase italic tracking-wide">Cell Cycle and Cell Division</h4>
+                    <p class="text-[7px] text-gray-500 uppercase font-bold mt-0.5">Automated High-Performance Stream</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-circle-play text-yellow-500 text-lg"></i>
+        </div>
+    </div>
+
+    <script>
+        function launchAutomatedReader(chId, chName) {
+            location.href = `./ncert_reader.html?ch=${chId}&name=${encodeURIComponent(chName)}`;
+        }
+    </script>
+</body>
+</html>
+
