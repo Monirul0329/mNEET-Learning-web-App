@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Dashboard</title>
+    <title>Dashboard Hub Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -18,23 +18,23 @@
 
     <div class="flex justify-between items-center mb-6 px-2 mt-4">
         <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-md" id="profileBadgeText">U</div>
+            <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm" id="profileBadgeText">U</div>
             <div>
                 <h1 class="text-xs font-black uppercase italic tracking-wide text-white" id="profileDashboardUserTitle">Loading Profile...</h1>
                 <p class="text-[8px] text-yellow-500 font-black uppercase tracking-wider mt-0.5"><i class="fa-solid fa-building-columns mr-1"></i> TARGET: <span id="dreamCollegeHeadlineText">AIIMS Delhi</span></p>
             </div>
         </div>
-        <div class="bg-yellow-500/10 px-3.5 py-1.5 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">🪙 <span id="walletCoinText">0</span></div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="terminateUserSessionGateway()" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center text-xs active:scale-90 transition-all" title="Secure Exit Account Session Layer"><i class="fa-solid fa-power-off"></i></button>
+            <div class="bg-yellow-500/10 px-3.5 py-1.5 rounded-full text-[10px] font-black italic border border-yellow-500/20 text-yellow-400">🪙 <span id="walletCoinText">0</span></div>
+        </div>
     </div>
 
     <div class="px-2 mb-6 flex items-center gap-4">
         <div class="flex flex-col items-center space-y-1 cursor-pointer" onclick="launchMotivationalStoryPopup('Stay focused! Mitosis cycle equations need complete revisions today.', 'Admin Audio Note')">
             <div class="w-12 h-12 rounded-full story-ring"><div class="w-full h-full bg-[#070b14] rounded-full flex items-center justify-center text-white text-xs"><i class="fa-solid fa-bolt-lightning text-yellow-400"></i></div></div>
             <span class="text-[6px] uppercase font-black text-gray-400 tracking-wider">Motivation</span>
-        </div>
-        <div class="flex flex-col items-center space-y-1 cursor-pointer" onclick="launchMotivationalStoryPopup('Biomolecules standard tables revision sequence uploaded in resources section.', 'Faculty Stream Note')">
-            <div class="w-12 h-12 rounded-full story-ring"><div class="w-full h-full bg-[#070b14] rounded-full flex items-center justify-center text-white text-xs"><i class="fa-solid fa-microphone text-blue-400"></i></div></div>
-            <span class="text-[6px] uppercase font-black text-gray-400 tracking-wider">Daily Alert</span>
         </div>
     </div>
 
@@ -65,29 +65,20 @@
 
     <div class="grid grid-cols-2 gap-4 px-1">
         <div onclick="location.href='study_zone.html'" class="glass p-5 rounded-[2rem] border-b-4 border-blue-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer"><div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 text-xs"><i class="fa-solid fa-user-doctor"></i></div><div><h4 class="text-xs font-black uppercase italic text-white leading-none">Study Zone</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Revision Matrix</p></div></div>
-        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2rem] border-b-4 border-purple-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer"><div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xs"><i class="fa-solid fa-stopwatch-20"></i></div><div><h4 class="text-xs font-black uppercase italic text-white leading-none">NTA Simulator</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Speed booster</p></div></div>
+        <div onclick="location.href='quiz.html'" class="glass p-5 rounded-[2rem] border-b-4 border-purple-500 flex flex-col justify-between h-28 active:scale-95 transition-all cursor-pointer"><div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xs"><i class="fa-solid fa-stopwatch-20"></i></div><div><h4 class="text-xs font-black uppercase italic text-white leading-none">Speed Simulator</h4><p class="text-[6px] text-gray-500 uppercase mt-1 font-black">Practice Run</p></div></div>
     </div>
 
     <div id="storyPopupModalOverlay" class="fixed inset-0 bg-black/95 z-[200] hidden items-center justify-center p-6 text-white" onclick="closeStoryPopup()">
         <div class="w-full max-w-sm text-center p-6 space-y-6" onclick="event.stopPropagation()">
             <div class="h-1 w-full bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 animate-pulse" style="width: 100%"></div></div>
-            <span class="text-[8px] font-black uppercase text-yellow-500 tracking-widest block" id="storySourceLabel">ADMIN VOICE ALERT</span>
             <p id="storyMessageBodyText" class="text-sm font-black italic leading-relaxed text-slate-100"></p>
             <button onclick="closeStoryPopup()" class="text-[9px] text-gray-500 font-black uppercase tracking-wider">Tap Screen To Close</button>
         </div>
     </div>
 
-    <nav class="fixed bottom-6 left-6 right-6 glass p-4 rounded-full flex justify-around items-center z-50 border-white/10 shadow-2xl">
-        <i class="fa-solid fa-house text-yellow-500"></i>
-        <a href="study_zone.html" class="text-gray-600"><i class="fa-solid fa-book-open"></i></a>
-        <a href="quiz.html" class="text-gray-600"><i class="fa-solid fa-pen-nib"></i></a>
-        <a href="mstore.html" class="text-gray-600"><i class="fa-solid fa-store"></i></a>
-    </nav>
-
     <script>
         const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
-
         const userPhone = localStorage.getItem('mUserPhone');
 
         function startDashboardSync() {
@@ -103,7 +94,6 @@
                 document.getElementById('statsHoursText').innerText = (data.hoursSpent || 0) + "m";
                 document.getElementById('statsMcqText').innerText = data.questionsSolved || 0;
 
-                // 10 Level Medical Ranks XP Progression Engine mapping calculations loops
                 const xp = data.xp || 0;
                 let activeRank = "Aspirant";
                 if(xp > 100) activeRank = "Med Student"; if(xp > 300) activeRank = "Intern"; if(xp > 600) activeRank = "House Staff";
@@ -127,13 +117,19 @@
 
         function launchMotivationalStoryPopup(msg, src) {
             document.getElementById('storyMessageBodyText').innerText = msg;
-            document.getElementById('storySourceLabel').innerText = src.toUpperCase();
             document.getElementById('storyPopupModalOverlay').style.display = 'flex';
         }
         function closeStoryPopup() { document.getElementById('storyPopupModalOverlay').style.display = 'none'; }
 
+        // Secure state destroy algorithm configuration
+        function terminateUserSessionGateway() {
+            if(confirm("Confirm to verify signature drop execution to safely logout profile storage arrays?")) {
+                localStorage.clear();
+                location.href = 'index.html';
+            }
+        }
+
         startDashboardSync(); calculateCountdown();
     </script>
 </body>
-        </html>
-    
+</html>
