@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-[#070b14] text-white p-8">
+    <h1 class="text-2xl font-black mb-6">Batch Configuration Engine</h1>
+    <div class="glass p-6 rounded-2xl bg-[#16213e]">
+        <input type="text" id="batchName" placeholder="New Batch Name (e.g. NEET-2026-Batch-A)" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-xs mb-4">
+        <button onclick="createBatch()" class="bg-blue-600 px-6 py-3 rounded-xl font-bold">Launch Batch Pipeline</button>
+    </div>
+    <script>
+        function createBatch() {
+            const batch = document.getElementById('batchName').value;
+            firebase.database().ref('batches/' + batch).set({ status: 'active', createdAt: Date.now() });
+            alert("Batch Node Pipeline Deployed!");
+        }
+    </script>
+</body>
+</html>
+
