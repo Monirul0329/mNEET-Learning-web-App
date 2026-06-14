@@ -21,10 +21,10 @@
             <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">Identity & Security Authentication Control</p>
         </div>
 
-        <!-- Verification Credentials Capture Input Form Center -->
+        <!-- Single Gateway Login Form Layer -->
         <div class="space-y-3 text-left" id="credentialsStepBox">
             <div>
-                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Aspirant Full Name</label>
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Name / Identity (Optional for Admin)</label>
                 <input type="text" id="regName" placeholder="Enter Full Name..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
             <div>
@@ -32,17 +32,17 @@
                 <input type="email" id="regEmail" placeholder="username@gmail.com" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
             <div>
-                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Mobile Phone (10-Digit Matrix)</label>
-                <input type="tel" id="regPhone" placeholder="9999999999" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
+                <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Mobile Phone / Admin Security Password</label>
+                <input type="password" id="regPhone" placeholder="Enter 10-digit Phone or Admin Pass" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-xs text-white font-bold mt-1">
             </div>
-            <div>
+            <div id="dreamCollegeBox">
                 <label class="text-[8px] font-black uppercase text-yellow-500 pl-1">🎯 Dream Medical College Goal</label>
                 <input type="text" id="regCollege" placeholder="e.g. AIIMS Delhi, JIPMER..." class="w-full p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/20 outline-none text-xs text-yellow-400 font-bold mt-1">
             </div>
-            <button onclick="triggerOtpRequest()" class="w-full bg-blue-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white mt-2 active:scale-95 transition-all">Request Secure OTP</button>
+            <button onclick="evaluateGatewayRoute()" class="w-full bg-blue-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white mt-2 active:scale-95 transition-all">Secure Login Gateway</button>
         </div>
 
-        <!-- OTP Input Validation Verification Deck Box Panel Layer -->
+        <!-- Student OTP Code Panel Box Input Row -->
         <div class="space-y-4 text-left hidden" id="verificationOtpStepBox">
             <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center">
                 <p class="text-[9px] font-black text-blue-400 uppercase">Verification System Dispatch Loop Safe</p>
@@ -52,7 +52,7 @@
                 <label class="text-[8px] font-black uppercase text-gray-400 pl-1">Enter 4-Digit Validation Key</label>
                 <input type="number" id="otpInputCode" placeholder="0 0 0 0" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none text-center text-sm tracking-widest text-white font-bold mt-1">
             </div>
-            <button onclick="verifyOtpToken()" class="w-full bg-green-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white active:scale-95 transition-all">Verify & Boot Platform</button>
+            <button onclick="verifyOtpToken()" class="w-full bg-green-600 py-4 rounded-2xl text-xs font-black uppercase tracking-wider text-white active:scale-95 transition-all">Verify & Boot Student Platform</button>
         </div>
     </div>
 
@@ -62,15 +62,30 @@
 
         let cachedProfilePayload = {};
 
-        function triggerOtpRequest() {
+        // Smart Router: Evaluates whether input is a Student or the Master Admin
+        function evaluateGatewayRoute() {
             const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const passwordOrPhone = document.getElementById('regPhone').value.trim();
             const college = document.getElementById('regCollege').value.trim();
 
-            if(!name || !email || phone.length < 10 || !college) return alert("Fill registration metrics parameter values fully!");
+            if (!email || !passwordOrPhone) {
+                return alert("Please input your login parameters validation fields fully!");
+            }
 
-            cachedProfilePayload = { name, email, phone, dreamCollege: college };
+            // CRITICAL CHECK: Master Admin Core Routing Trigger Logic
+            if (email === "admin@mneet.com" && passwordOrPhone === "mneet2026") {
+                alert("Master Admin Verified! Accessing Control Command Deck...");
+                window.location.replace("./admin_dashboard.html");
+                return;
+            }
+
+            // Regular Route: Executed for standard student accounts
+            if (!name || passwordOrPhone.length < 10 || !college) {
+                return alert("Students must provide Name, 10-digit Phone, and Dream College Goal parameters!");
+            }
+
+            cachedProfilePayload = { name, email, phone: passwordOrPhone, dreamCollege: college };
             document.getElementById('credentialsStepBox').classList.add('hidden');
             document.getElementById('verificationOtpStepBox').classList.remove('hidden');
         }
@@ -93,7 +108,6 @@
             }).then(() => { location.href = 'dashboard.html'; });
         }
 
-        // Progressive Web App verification controller mapping loop hook (Installer Hook)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
