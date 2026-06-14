@@ -9,90 +9,84 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Exact color scheme synchronization from 1000057444.jpg */
-        body { background-color: #0b132b; color: white; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .mneet-card { background-color: #1c2541; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .mneet-input { background-color: #0b132b; border: 1px solid #3a506b; outline: none; transition: all 0.2s; }
-        .mneet-input:focus { border-color: #fbc02d; }
-        .mneet-btn { background-color: #fbc02d; color: #0b132b; font-weight: 900; letter-spacing: 0.05em; transition: all 0.2s; }
-        .mneet-btn:active { transform: scale(0.97); }
+        /* Exact color matrix cloning from 1000057444.jpg template design */
+        body { background-color: #0c1322; color: white; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .mneet-card { background-color: #1c2742; border-radius: 3rem; width: 100%; max-width: 360px; padding: 2.5rem 2rem; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255,255,255,0.03); }
+        .mneet-input { background-color: #0f182e; border: 1px solid #2a3b5c; border-radius: 1.25rem; outline: none; padding: 1.1rem 1.25rem; font-size: 13px; color: white; font-weight: 500; width: 100%; box-sizing: border-box; }
+        .mneet-input::placeholder { color: #5f7495; font-weight: 500; }
+        .mneet-input:focus { border-color: #f6b916; background-color: #0c1322; }
+        .mneet-btn { background-color: #f6b916; color: #0c1322; font-weight: 900; font-size: 13px; letter-spacing: 0.05em; border-radius: 1.25rem; padding: 1.1rem; width: 100%; transition: all 0.2s ease; border: none; cursor: pointer; }
+        .mneet-btn:active { transform: scale(0.97); opacity: 0.9; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <!-- MAIN CENTRAL CONTROLLER CONTAINER PANEL -->
-    <div class="w-full max-w-sm mneet-card p-8 text-center space-y-6">
+    <div class="mneet-card text-center space-y-7">
         
-        <!-- Header Visual Branding Cloned From 1000057444.jpg -->
-        <div class="italic tracking-tighter">
-            <span class="text-3xl font-black text-white">M</span><span class="text-3xl font-black text-[#fbc02d]">NEET</span>
+        <div class="italic tracking-tighter select-none my-2">
+            <span class="text-4xl font-black text-white">M</span><span class="text-4xl font-black text-[#f6b916]">NEET</span>
         </div>
 
-        <!-- ================= PANEL 1: SIGN IN CODE BLOCK ================= -->
         <div class="space-y-4 text-left" id="signInFormBox">
             <div>
-                <input type="text" id="loginUserKey" placeholder="monirulgen45@gmail.com" class="w-full p-4 rounded-2xl mneet-input text-xs text-white font-medium">
+                <input type="text" id="loginUserKey" placeholder="monirulgen45@gmail.com" class="mneet-input">
             </div>
             <div>
-                <input type="password" id="loginPassword" placeholder="••••••••••••" class="w-full p-4 rounded-2xl mneet-input text-xs text-white font-medium">
+                <input type="password" id="loginPassword" placeholder="••••••••••••" class="mneet-input">
             </div>
             <div class="text-right px-1">
-                <button onclick="switchView('forgot')" class="text-[9px] font-black uppercase text-red-400 hover:underline tracking-wide">Forgot Password?</button>
+                <button onclick="switchView('forgot')" class="text-[9px] font-black uppercase text-red-400/80 hover:underline tracking-wider">Forgot Password?</button>
             </div>
-            <button onclick="executeSignInAuthentication()" class="w-full mneet-btn py-4 rounded-2xl text-xs uppercase shadow-lg">SIGN IN</button>
-            <p class="text-[10px] text-gray-400 font-bold tracking-wide text-center mt-3">NEW SURGEON? <button onclick="switchView('signup')" class="text-[#fbc02d] font-black uppercase hover:underline">SIGN UP</button></p>
+            <button onclick="executeSignInAuthentication()" class="mneet-btn mt-2">SIGN IN</button>
+            <p class="text-[10px] text-gray-400 font-bold tracking-wider text-center pt-2">NEW SURGEON? <button onclick="switchView('signup')" class="text-[#f6b916] font-black uppercase hover:underline">SIGN UP</button></p>
         </div>
 
-        <!-- ================= PANEL 2: SIGN UP CODE BLOCK ================= -->
-        <div class="space-y-3 text-left hidden" id="signUpFormBox">
+        <div class="space-y-4 text-left hidden" id="signUpFormBox">
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="signName" placeholder="Full Name" class="w-full p-3.5 rounded-xl mneet-input text-xs text-white font-medium">
-                <input type="email" id="signEmail" placeholder="Gmail Address" class="w-full p-3.5 rounded-xl mneet-input text-xs text-white font-medium">
+                <input type="text" id="signName" placeholder="Full Name" class="mneet-input !p-3.5">
+                <input type="email" id="signEmail" placeholder="Gmail Link" class="mneet-input !p-3.5">
             </div>
             <div class="grid grid-cols-2 gap-2">
-                <input type="tel" id="signPhone" placeholder="10-Digit Phone" class="w-full p-3.5 rounded-xl mneet-input text-xs text-white font-medium">
-                <input type="text" id="signCity" placeholder="Your City" class="w-full p-3.5 rounded-xl mneet-input text-xs text-white font-medium">
+                <input type="tel" id="signPhone" placeholder="10-Digit Phone" class="mneet-input !p-3.5">
+                <input type="text" id="signCity" placeholder="Your City" class="mneet-input !p-3.5">
             </div>
             <div>
-                <input type="text" id="signCollege" placeholder="🎯 Dream Medical College Goal" class="w-full p-3.5 rounded-xl mneet-input text-xs text-yellow-400 font-bold bg-[#0b132b]/50">
+                <input type="text" id="signCollege" placeholder="🎯 Dream Medical College Goal" class="mneet-input !p-3.5 text-yellow-400 font-bold">
             </div>
             <div>
-                <input type="password" id="signPassword" placeholder="Create Account Password" class="w-full p-3.5 rounded-xl mneet-input text-xs text-white font-medium">
+                <input type="password" id="signPassword" placeholder="Create Account Password" class="mneet-input !p-3.5">
             </div>
-            <button onclick="triggerSignUpOtpPipeline()" class="w-full mneet-btn py-3.5 rounded-xl text-xs uppercase shadow-lg">REGISTER & GET OTP</button>
-            <p class="text-[10px] text-gray-400 font-bold tracking-wide text-center mt-2">ALREADY REGISTERED? <button onclick="switchView('signin')" class="text-[#fbc02d] font-black uppercase hover:underline">SIGN IN</button></p>
+            <button onclick="triggerSignUpOtpPipeline()" class="mneet-btn !py-3.5 mt-1">REGISTER & GET OTP</button>
+            <p class="text-[10px] text-gray-400 font-bold tracking-wider text-center pt-1">ALREADY REGISTERED? <button onclick="switchView('signin')" class="text-[#f6b916] font-black uppercase hover:underline">SIGN IN</button></p>
         </div>
 
-        <!-- ================= PANEL 3: SECURE MOBILE OTP CHECK INTERFACE ================= -->
         <div class="space-y-4 text-left hidden" id="otpVerificationFormBox">
-            <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center">
-                <p class="text-[8px] font-black text-blue-400 uppercase tracking-wider">Mobile Verification Stream Active</p>
-                <p class="text-[7px] text-gray-400 uppercase mt-0.5">Bypass Code: 1234</p>
+            <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-center">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Mobile Verification Active</p>
+                <p class="text-[8px] text-gray-400 uppercase mt-0.5 font-bold">Default Verification Code: 1234</p>
             </div>
             <div>
-                <input type="number" id="otpVerificationInput" placeholder="0 0 0 0" class="w-full p-4 rounded-2xl mneet-input text-center text-sm tracking-widest text-white font-black">
+                <input type="number" id="otpVerificationInput" placeholder="0 0 0 0" class="mneet-input text-center text-base tracking-widest font-black">
             </div>
-            <button onclick="completeSignUpProcess()" class="w-full bg-green-600 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-wider active:scale-95 transition-all">VERIFY OTP & SYNC</button>
+            <button onclick="completeSignUpProcess()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition-all">VERIFY OTP & SYNC</button>
         </div>
 
-        <!-- ================= PANEL 4: AUTOMATED FORGOT PASSWORD COMPILER ================= -->
         <div class="space-y-4 text-left hidden" id="forgotPasswordFormBox">
-            <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
-                <p class="text-[8px] font-black text-red-400 uppercase tracking-wider">Account Discovery Tracer</p>
+            <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-center">
+                <p class="text-[9px] font-black text-red-400 uppercase tracking-wider">Account Discovery Tracer</p>
             </div>
             <div>
-                <input type="text" id="forgotKeyInput" placeholder="Enter Registered Gmail or Phone..." class="w-full p-4 rounded-2xl mneet-input text-xs text-white font-medium">
+                <input type="text" id="forgotKeyInput" placeholder="Enter Registered Gmail or Phone..." class="mneet-input">
             </div>
-            <button onclick="executePasswordRecoveryDiscovery()" class="w-full mneet-btn py-4 rounded-2xl text-xs uppercase shadow-lg">DISPATCH RECOVERY CODE</button>
-            <button onclick="switchView('signin')" class="w-full text-center text-[8px] font-black uppercase text-gray-500 tracking-widest pt-1">BACK TO SIGN IN</button>
+            <button onclick="executePasswordRecoveryDiscovery()" class="mneet-btn">DISPATCH RECOVERY CODE</button>
+            <button onclick="switchView('signin')" class="w-full text-center text-[9px] font-black uppercase text-gray-500 tracking-widest pt-1">BACK TO SIGN IN</button>
         </div>
 
     </div>
 
     <script>
-        // Realtime Firebase Cloud Link Injection (Consistent with other layers)
         const firebaseConfig = { apiKey: "AIzaSyApQOM_mtFZ16RiNJEaIUhb4iYFBIBRK58", authDomain: "mneet-spark.firebaseapp.com", projectId: "mneet-spark", databaseURL: "https://mneet-spark-default-rtdb.firebaseio.com/", appId: "1:252201633700:web:1a1e7a2cff1f0b168ea331" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
 
@@ -109,7 +103,7 @@
             if (target === 'forgot') document.getElementById('forgotPasswordFormBox').classList.remove('hidden');
         }
 
-        // ================= ACTION 1: SIGN UP AND MOBILE DATA CACHING =================
+        // ================= SIGN UP FLOW REGISTRATION METRICS =================
         function triggerSignUpOtpPipeline() {
             const name = document.getElementById('signName').value.trim();
             const email = document.getElementById('signEmail').value.trim().toLowerCase();
@@ -119,13 +113,13 @@
             const pass = document.getElementById('signPassword').value;
 
             if(!name || !email || phone.length < 10 || !city || !college || !pass) {
-                return alert("Please check and fill all signup parameters field correctly!");
+                return alert("Please check and fill all parameters fully!");
             }
 
             const cleanPhone = phone.replace(/[^0-9]/g, "");
             
             db.ref(`students/${cleanPhone}`).once('value', snap => {
-                if(snap.exists()) return alert("Account error: This Phone number is already registered!");
+                if(snap.exists()) return alert("Operational Error: Phone code node already active!");
                 
                 registrationPayloadCache = { name, email, phone: cleanPhone, city, dreamCollege: college, password: pass };
                 document.getElementById('signUpFormBox').classList.add('hidden');
@@ -135,9 +129,8 @@
 
         function completeSignUpProcess() {
             const otpCode = document.getElementById('otpVerificationInput').value;
-            if(otpCode !== "1234") return alert("Invalid OTP verification security handshake key!");
+            if(otpCode !== "1234") return alert("Invalid handshake key configuration verification failed!");
 
-            // Inserts full parameters cleanly into cloud routing database maps
             db.ref(`students/${registrationPayloadCache.phone}`).set({
                 name: registrationPayloadCache.name,
                 email: registrationPayloadCache.email,
@@ -145,43 +138,40 @@
                 city: registrationPayloadCache.city,
                 dreamCollege: registrationPayloadCache.dreamCollege,
                 password: registrationPayloadCache.password,
-                role: "student", // Dynamic modifier parameter anchor hook
+                role: "student", // Dynamic data control switch tag node
                 coins: 100, xp: 10, hoursSpent: 0, questionsSolved: 0, timestamp: Date.now()
             }).then(() => {
-                alert("Account verification done! Syncing system onto live dashboard...");
+                alert("Account verification done! Syncing system database loops...");
                 localStorage.setItem('mUserPhone', registrationPayloadCache.phone);
                 localStorage.setItem('mUserName', registrationPayloadCache.name);
                 location.href = 'dashboard.html';
-            }).catch(err => alert("Sync Anomaly: " + err.message));
+            }).catch(err => alert("Database Sync Anomaly: " + err.message));
         }
 
-        // ================= ACTION 2: MUTLI-IDENTIFIER AUTH SIGN-IN LAYER =================
+        // ================= MULTI-ROUTE DISPATCH SIGN IN AUTHENTICATION =================
         function executeSignInAuthentication() {
             const userKey = document.getElementById('loginUserKey').value.trim().toLowerCase();
             const inputPass = document.getElementById('loginPassword').value;
 
-            if(!userKey || !inputPass) return alert("Please fill up both fields properly!");
+            if(!userKey || !inputPass) return alert("Please type your login inputs validation parameters properly!");
 
             let queryRef = db.ref(`students`);
             let userMatchNode = null;
 
             queryRef.once('value', snap => {
-                if(!snap.exists()) return alert("Database access error! Records empty.");
+                if(!snap.exists()) return alert("Database connection tracking nodes empty!");
 
-                // Dynamically scan loops across either structural Phone OR Gmail matches
                 snap.forEach(child => {
                     const record = child.val();
-                    if(child.key === userKey || record.email === userKey) {
-                        userMatchNode = record;
-                    }
+                    if(child.key === userKey || record.email === userKey) userMatchNode = record;
                 });
 
                 if(userMatchNode) {
                     if(userMatchNode.password === inputPass) {
                         
-                        // CENTRAL PURE DATABASE SECURITY ROLE EVALUATOR GATEWAY:
+                        // CENTRAL PURE DATABASE CONTROLLER TRIGGER INTERFACE BYPASS:
                         if(userMatchNode.role === "admin") {
-                            alert("Master Admin Account Verified! Deploying control boards instantly...");
+                            alert("Master Access Approved! Opening Control Commands Dashboard Panel Hub...");
                             window.location.replace("./admin_dashboard.html");
                         } else {
                             localStorage.setItem('mUserPhone', userMatchNode.phone);
@@ -189,24 +179,18 @@
                             localStorage.setItem('mUserEmail', userMatchNode.email);
                             location.href = 'dashboard.html';
                         }
-                    } else {
-                        alert("Access Denied: Password mismatch signature!");
-                    }
-                } else {
-                    alert("No registered account logs found matching this identifier input!");
-                }
+                    } else { alert("Access Denied: Invalid Password Signature!"); }
+                } else { alert("Identity Lookup Failure: No registered data nodes connect to this input."); }
             });
         }
 
-        // ================= ACTION 3: RECOVERY CODE TRACER TRACK =================
+        // ================= BACKEND PASSWORD RECOVERY LINK TRACERS =================
         function executePasswordRecoveryDiscovery() {
             const recoveryKey = document.getElementById('forgotKeyInput').value.trim().toLowerCase();
-            if(!recoveryKey) return alert("Recovery query is empty!");
+            if(!recoveryKey) return alert("Discovery query can't be blank!");
 
             db.ref(`students`).once('value', snap => {
-                let match = null;
-                if(!snap.exists()) return;
-
+                let match = null; if(!snap.exists()) return;
                 snap.forEach(child => {
                     const data = child.val();
                     if(child.key === recoveryKey || data.email === recoveryKey) match = data;
@@ -214,14 +198,12 @@
 
                 if(match) {
                     if(recoveryKey.includes("@")) {
-                        alert(`Recovery Code transmitted successfully to Gmail: [ ${match.email} ]\nYour Saved Account Password: ${match.password}`);
+                        alert(`Recovery Alert: Password tokens sent to Gmail registry server: [ ${match.email} ]\nAccount Key Password: ${match.password}`);
                     } else {
-                        alert(`Recovery Code dispatched successfully via SMS routing to: [ +91 ${match.phone} ]\nYour Saved Account Password: ${match.password}`);
+                        alert(`Recovery Alert: Password tokens sent via SMS data routing to: [ +91 ${match.phone} ]\nAccount Key Password: ${match.password}`);
                     }
                     switchView('signin');
-                } else {
-                    alert("Tracer Error: Input records do not connect to any registered credentials nodes inside user stacks.");
-                }
+                } else { alert("Lookup Error: Credentials parameters logic matrix unmatched inside stack nodes."); }
             });
         }
 
